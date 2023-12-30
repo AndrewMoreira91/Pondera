@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Study</title>
+    <!-- Links para as fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,800&family=Syne&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/reset.css">
+
+    <link rel="shortcut icon" href="images/add.svg" type="image/x-icon">
+
+    <script src="./js/script.js" defer></script>
+    <script src="./js/create-task.js" defer></script>
+    <script src="./js/notification.js" defer></script>
+</head>
+<body>
+
+    <header id="app--header-container">
+
+    </header>
+
+    <main >
+
+        <div id="app--main-container">
+            <section class="app-section-timer-container">
+                <div id="timer" class="app--card-timer">
+                    <span class="card-timer-count" id="timer-minutes"></span>
+                    <span class="card-timer-count" id="timer-seconds"></span>
+                </div>
+                <div id="controls" class="app--card-controls">
+                    <ul class="app--card-list">
+                        <li class="app--card-list-item">
+                            <button class="app--card-button app--card-button-reset">
+                                <img class="img-card-button-reset" src="images/device_reset.png" alt="3 pontos">
+                            </button>
+                        </li>
+                        <li class="app--card-list-item">
+                            <button class="app--card-button app--card-button-play-pause">
+                                <img class="img-card-button-play" src="images/play.png" alt="botão de play">
+                            </button>
+                        </li>
+                        <li class="app--card-list-item">
+                            <button class="app--card-button app--card-button-next">
+                                <img class="img-card-button-next" src="images/ph_fast-forward.png" alt="botão de proximo">
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="app-section-info-section-container">
+                <div class="app-card-info-item app--card-progress">
+                    <h3>Andamento diário</h3>
+                    <div id="progress-bar" class="app--card-progress-bar">
+                        <div id="progress-content" class="app--card-progress-content"></div>
+                    </div>
+                    <span id="text-progress" class="app-card-info-text-progress">Concluido:
+                        <span id="text-time-progress">1 hora e 23 minutos</span>
+                    </span>
+                </div>
+                <div class="app-card-info-item app-card-info-sequence-day">
+                    <h3 class="info-text-sequence">Sequência de <span id="number-sequence-day">12 dias</span></h3>
+                    <span id="text-info-sequence">Ontem você teve um tempo de <span id="time-progress-yesterday">2,32 horas</span> de concentração</span>
+                </div>
+                <div class="app-card-info-item app-card-tasks-container">
+                    <div class="app--card-create-new-task-container">
+                        <h3 class="title-create-tasks">Tarefas</h3>
+                        <div class="app--create-new-task-input-button">
+                            <input id="input-create-new-task" type="text" placeholder="Crie uma nova tarefa">
+                            <button class="app--card-create-new-task-button">
+                                <img src="images/add.svg" alt="">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="app--card-tasks-content">
+                        <span id="text-info-tasks">Selecione as tarefas para a sua sessão de concentração</span>
+                        <ul class="app--card-tasks-list"></ul>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+    
+</body>
+</html>
