@@ -161,19 +161,12 @@ document.addEventListener('timeFinished', () => {
 });
 
 // Event listener for Context-descanso event
-document.addEventListener('Context-descanso', () => {
+document.addEventListener('Context-rest', () => {
     // Disabling task items during rest context
     ulTasksList.querySelectorAll('.app-card-task-item').forEach(Element => {
         Element.classList.add('disabled');
         Element.classList.remove('app-card-task-item-active');
     });
-});
-
-// Event listener for Context-foco event
-document.addEventListener('Context-foco', () => {
-    // Creating and displaying tasks during focus context
-    createTasks();
-    textTaskProgress.textContent = textDefault;
 });
 
 // Function to create and display tasks in the UI

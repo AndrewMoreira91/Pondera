@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Habit</title>
-    <!-- Links para as fontes -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,800&family=Syne&display=swap" rel="stylesheet">
+    <title>Pondera</title>
 
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/reset.css">
 
-    <link rel="shortcut icon" href="images/add.svg" type="image/x-icon">
+    <link rel="icon" type="image/png" sizes="16x16"  href="/images/favicons/favicon-16x16.png">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
 
     <script src="./js/script.js" defer></script>
     <script src="./js/create-task.js" defer></script>
@@ -97,18 +95,21 @@
     <section class="app--card-modal-cotainer">
         <div class="hide" id="fade-modal"></div>
         <div class="hide" id="modal">
-
-            <h3 id="title-modal">Bem Vindo ao Study Habit</h3>
+            <h3 id="title-modal">Bem Vindo ao <strong class="nameLogo">Pondera</strong></h3>
             <p id="description-modal">
                 Este site foi desenvolvido para auxiliar na criação do hábito de estudo através da técnica Pomodoro. Para personalizar sua experiência, precisamos saber quanto tempo diário você pretende dedicar à concentração. 
             </p>
+            <div id="line"></div>
             <p id="text-aviso">
-                Por favor, informe-nos a quantidade de tempo que você planeja reservar diariamente para seus estudos (em segundos kkk).
+                Por favor, informe-nos a quantidade de tempo que você planeja reservar diariamente para seus estudos.
             </p>
-
-            <input id="input-modal" type="number">
-            <button id="button-modal">Pronto</button>
-
+            <span id="text-erro" class="hidden hide">
+                Para continuarmos precisamos que o campo de escolha esteja preenchido. <br> Por favor verifique se está preenchido corretamente.
+            </span>
+            <div id="cotainer-input-button">
+                <input id="timer-modal" type="time" value="00:30">
+                <button id="button-modal">Pronto</button>
+            </div>
         </div>
     </section>
     

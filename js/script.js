@@ -13,8 +13,9 @@ const textTargetTime = document.querySelector('#text-target-time');
 const btnNext = document.querySelector('.app--card-button-next');
 const fadeModal = document.querySelector('#fade-modal');
 const modal = document.querySelector('#modal');
-const inputModal = document.querySelector("#input-modal");
+const timerModal = document.querySelector("#timer-modal");
 const btnModal = document.querySelector('#button-modal')
+const textErroModal = document.querySelector('#text-erro')
 
 // Audio Elements
 const audioAlert = new Audio('./sounds/alert.wav');
@@ -25,7 +26,7 @@ audioPlay.volume = 0.3;
 audioPause.volume = 0.2;
 
 // Initial Settings
-let timeOfSessionInSeconds = 10;
+let timeOfSessionInSeconds = 1500;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
 let timeInSeconds = JSON.parse(localStorage.getItem('Past-time')) || timeOfSessionInSeconds;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
@@ -54,22 +55,23 @@ if (!targetDailyTime) {
 
 // Event listeners
 btnPlayPause.addEventListener('click', start);
-document.addEventListener('notificationClickDescanso', start);
 btnNext.addEventListener('click', changeContext)
 btnReset.addEventListener('click', () => {
     timeInSeconds = timeOfSessionInSeconds;
     updateLocalStorage('Past-time', timeInSeconds);
     showTimer();
 })
+document.addEventListener('notificationClickRest', start);
 
 // Function to handle modal button click
 btnModal.addEventListener('click', () => {
-    if(inputModal) {
+    const [hour, minutes] = timerModal.value.split(':').map(Number);
+    if( hour >= 0 && minutes) {
+        targetDailyTime =  hour * 3600 + minutes * 60
+        updateLocalStorage('Target-time', targetDailyTime)
+
         fadeModal.classList.add('hide')
         modal.classList.add('hide')
-
-        targetDailyTime = Number(inputModal.value) 
-        updateLocalStorage('Target-time', targetDailyTime)
 
         speed = 1 / (targetDailyTime / 100)
         progress = speed * timeConcluded
@@ -77,6 +79,8 @@ btnModal.addEventListener('click', () => {
         changeTextGoal()
         showProgressText()
         changeProgressBar()
+    } else {
+        textErroModal.classList.remove('hidden', 'hide')
     }
 })
 
@@ -86,17 +90,16 @@ function changeContext() {
     if (checkContext()) {
         timeOfSessionInSeconds = 900;
         
-        const event = new CustomEvent('Context-descanso')
+        const event = new CustomEvent('Context-rest')
         document.dispatchEvent(event)
         html.setAttribute('data-contexto', 'descanso')
         timeInSeconds = timeOfSessionInSeconds
-        intervalRest = setInterval(updateRestIndicator, 1000)
+        updateRestIndicator()
         showTimer()
     } else {
         timeOfSessionInSeconds = 1500
 
-        const event = new CustomEvent('Context-foco')
-        document.dispatchEvent(event)
+        textTaskProgress.textContent = textDefault;
         html.setAttribute('data-contexto', 'foco')
         timeInSeconds = timeOfSessionInSeconds
         clearInterval(intervalRest)
@@ -129,17 +132,15 @@ function start() {
  */
 function countDown() {
     if (timeInSeconds <= 0) {
-        // Play alert sound, reset timer, and trigger context changes
         imgBtnPlayPause.setAttribute('src', './images/play.svg')
         audioAlert.play()
         timeInSeconds = timeOfSessionInSeconds
-        // Dispatch a event of timer finished
         const event = new CustomEvent('timeFinished')
         document.dispatchEvent(event)
         resetTimer()
-
         // If in focus context, switch context and start countdown, if in rest context, only switch context
-        checkContext ? changeContext() + start() : changeContext()
+        checkContext() ? changeContext() + start() : changeContext()
+
         showTimer();
         return
     }
@@ -147,7 +148,7 @@ function countDown() {
     // Decrement the timer
     timeInSeconds--;
     // Increment timeConcluded if in rest context
-    checkContext() ? timeConcluded ++ : false;
+    checkContext() ? timeConcluded ++ : updateRestIndicator();
     updateLocalStorage('Time-concluded', timeConcluded)
     // Update local storage with the current timer value
     updateLocalStorage('Past-time', timeInSeconds)
@@ -182,12 +183,11 @@ function showTimer() {
 let dots = ''
 function updateRestIndicator() {
     if(!checkContext()) {
-        console.log(dots)
+        textTaskProgress.textContent = 'Descansando' + dots
         if(dots === '...') {
             return dots = ''
         }
         dots += '.'
-        textTaskProgress.textContent = 'Descansando' + dots
     }
 }
 
