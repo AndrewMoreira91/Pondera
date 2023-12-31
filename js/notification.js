@@ -25,12 +25,10 @@
                 })
                 notificationDescanso.addEventListener('click', () => document.dispatchEvent(new CustomEvent('notificationClickDescanso')))
             } else {
-                const notificationFoco = new Notification('Bom trabalho! você terminou sua sessão de concentração.', {
+                new Notification('Bom trabalho! você terminou sua sessão de concentração.', {
                     icon: './images/cronometro.png',
                     body: 'Sua sessão de descanso ja começou'
                 })
-                notificationFoco.addEventListener('show', () => document.dispatchEvent(new CustomEvent('notificationClickFoco')))
-
             }
         }
     })

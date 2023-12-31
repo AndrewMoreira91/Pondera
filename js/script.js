@@ -1,3 +1,4 @@
+// DOM elements
 const html = document.querySelector('html')
 const btnPlayPause = document.querySelector('.app--card-button-play-pause');
 const numberMinutes = document.querySelector('#timer-minutes');
@@ -15,6 +16,7 @@ const modal = document.querySelector('#modal');
 const inputModal = document.querySelector("#input-modal");
 const btnModal = document.querySelector('#button-modal')
 
+// Audio Elements
 const audioAlert = new Audio('./sounds/alert.wav');
 const audioPlay = new Audio('./sounds/play.mp3');
 const audioPause = new Audio('./sounds/pause.wav');
@@ -22,30 +24,45 @@ audioAlert.volume = 0.6;
 audioPlay.volume = 0.3;
 audioPause.volume = 0.2;
 
-let timeOfSessionInSeconds = 1500;
+// Initial Settings
+let timeOfSessionInSeconds = 10;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
-
-if (!targetDailyTime) {
-    [fadeModal, modal].forEach(element => element.classList.toggle('hide')) 
-}
-
 let timeInSeconds = JSON.parse(localStorage.getItem('Past-time')) || timeOfSessionInSeconds;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
 let listTimesCocludeds = JSON.parse(localStorage.getItem('List-time-concluded')) || [];
 let sequenceConcludeds = JSON.parse(localStorage.getItem('Sequence-day'))
+let intervalRest = null
+
+let completedGoal = false;  // 
+
+// Calculate the speed of progress based on the target daily time
+let speed = 1 / (targetDailyTime / 100);
+// Calculate the initial progress based on the speed and time already concluded
+// The progress represents the completion percentage towards the daily goal
+let progress = speed * timeConcluded;
 
 let dateToday = new Date();
-dateToday =  dateToday.toLocaleDateString();
-let dateInLocalStorage = JSON.parse(localStorage.getItem('Date-today')) || false
-dateInLocalStorage = dateInLocalStorage  ? dateInLocalStorage : dateToday
-console.log(dateInLocalStorage)
+dateToday =  dateToday.toLocaleDateString(); // Get today's date
+let dateInLocalStorage = JSON.parse(localStorage.getItem('Date-today')) || false // Check if exist a date in local storage
+// If not exist a date in local storage, assign today's date to the variable
+dateInLocalStorage = dateInLocalStorage  ? dateInLocalStorage : dateToday 
 
-let completedGoal = false;
-let interval = null;
+// Check if there s a target daily time set, if not, show the modal.
+if (!targetDailyTime) {
+    [fadeModal, modal].forEach(element => element.classList.toggle('hide')) 
+}
 
-let speed = 1 / (targetDailyTime / 100)
-let progress = speed * timeConcluded
+// Event listeners
+btnPlayPause.addEventListener('click', start);
+document.addEventListener('notificationClickDescanso', start);
+btnNext.addEventListener('click', changeContext)
+btnReset.addEventListener('click', () => {
+    timeInSeconds = timeOfSessionInSeconds;
+    updateLocalStorage('Past-time', timeInSeconds);
+    showTimer();
+})
 
+// Function to handle modal button click
 btnModal.addEventListener('click', () => {
     if(inputModal) {
         fadeModal.classList.add('hide')
@@ -63,72 +80,127 @@ btnModal.addEventListener('click', () => {
     }
 })
 
-btnPlayPause.addEventListener('click', start);
-
-document.addEventListener('notificationClickDescanso', () => start());
-
-btnNext.addEventListener('click', () => {
-    changeContext()
-})
-function verificarContexto() {
-    return html.getAttribute('data-contexto') === 'foco'
-}
-
-let context = false
-let points = ''
-let intervalPoints = null
-
-function treePoints() {
-    if(context) {
-        console.log(points)
-        if(points === '...') {
-            return points = ''
-        }
-        points += '.'
-        
-        textTaskProgress.textContent = 'Descansando' + points
-    }
-}
-
+// Function for change the context
+//The context changes when the clock time changes between focus or rest session
 function changeContext() {
-    if (verificarContexto()) {
+    if (checkContext()) {
+        timeOfSessionInSeconds = 900;
         
         const event = new CustomEvent('Context-descanso')
         document.dispatchEvent(event)
         html.setAttribute('data-contexto', 'descanso')
-        timeOfSessionInSeconds = 900;
         timeInSeconds = timeOfSessionInSeconds
-
-        context = true
-        intervalPoints = setInterval(treePoints, 1000)
-        
+        intervalRest = setInterval(updateRestIndicator, 1000)
         showTimer()
     } else {
+        timeOfSessionInSeconds = 1500
+
         const event = new CustomEvent('Context-foco')
         document.dispatchEvent(event)
         html.setAttribute('data-contexto', 'foco')
-        timeOfSessionInSeconds = 1500
         timeInSeconds = timeOfSessionInSeconds
-
-        context = false
-        clearInterval(intervalPoints)
+        clearInterval(intervalRest)
         showTimer()
     }
 }
 
-function updateLocalStorage(item, value) {
-    localStorage.setItem(item, JSON.stringify(value))
+// Checks the context, if it is focus it returns true, if it is rest it returns false
+function checkContext() {
+    return html.getAttribute('data-contexto') === 'foco'
 }
 
-btnReset.addEventListener('click', () => {
-    timeInSeconds = timeOfSessionInSeconds;
-    updateLocalStorage('Past-time', timeInSeconds);
-    showTimer();
-})
+// Function to start the timer
+let intervalTimer = null; 
+function start() {
+    if(intervalTimer) {
+        audioPause.play()
+        imgBtnPlayPause.setAttribute('src', './images/play.svg')
+        resetTimer()
+        return
+    }
+    audioPlay.play()
+    imgBtnPlayPause.setAttribute('src', './images/pause.svg')
+    intervalTimer = setInterval(countDown, 1000)
+}
 
-console.log(dateToday !== dateInLocalStorage)
+/**
+ * Countdown function that decrements the timer and performs actions when the timer reaches zero.
+ * It updates the UI, checks if the timer has finished, and triggers context changes if necessary.
+ */
+function countDown() {
+    if (timeInSeconds <= 0) {
+        // Play alert sound, reset timer, and trigger context changes
+        imgBtnPlayPause.setAttribute('src', './images/play.svg')
+        audioAlert.play()
+        timeInSeconds = timeOfSessionInSeconds
+        // Dispatch a event of timer finished
+        const event = new CustomEvent('timeFinished')
+        document.dispatchEvent(event)
+        resetTimer()
+
+        // If in focus context, switch context and start countdown, if in rest context, only switch context
+        checkContext ? changeContext() + start() : changeContext()
+        showTimer();
+        return
+    }
+    console.log('Tempo decorrido em segundos:', timeInSeconds);
+    // Decrement the timer
+    timeInSeconds--;
+    // Increment timeConcluded if in rest context
+    checkContext() ? timeConcluded ++ : false;
+    updateLocalStorage('Time-concluded', timeConcluded)
+    // Update local storage with the current timer value
+    updateLocalStorage('Past-time', timeInSeconds)
+    // Update UI elements
+    changeProgressBar()
+    showProgressText()
+    showTimer()
+}
+
+// Function to reset the timer
+function resetTimer() {
+    clearInterval(intervalTimer)
+    intervalTimer = null
+}
+
+/**
+ * Updates the UI elements displaying the remaining time on the timer.
+ * It converts the timeInSeconds to a formatted string and updates the corresponding HTML elements.
+ */
+function showTimer() {
+    const timeDate = new Date(timeInSeconds * 1000)
+    const timeMinute = timeDate.toLocaleTimeString('pt-br',{minute: '2-digit'})
+    const timeSecond = timeDate.toLocaleTimeString('pt-br',{second: '2-digit'})
+    numberMinutes.textContent = `${timeMinute}`
+    numberSeconds.textContent = `${timeSecond}`
+}
+
+/**
+ * Updates the UI with a loading indicator during the rest context.
+ * The loading indicator is represented by a sequence of dots.
+ */
+let dots = ''
+function updateRestIndicator() {
+    if(!checkContext()) {
+        console.log(dots)
+        if(dots === '...') {
+            return dots = ''
+        }
+        dots += '.'
+        textTaskProgress.textContent = 'Descansando' + dots
+    }
+}
+
+// Function to update the values in localStorage, requires two parameters key and the value.
+function updateLocalStorage(key, value) {
+    localStorage.setItem(key, JSON.stringify(value))
+}
+
+// Check if the date has changed and update accordingly
 if (dateToday !== dateInLocalStorage) {
+    // Determine if the daily goal was completed based on timeConcluded and targetDailyTime
     completedGoal = timeConcluded >= targetDailyTime ? true : false;
+    // Create an object to store information about the completed day
     const dayConcluded = {
         dateConcluded: dateToday,
         timeConcluded: timeConcluded,
@@ -140,70 +212,17 @@ if (dateToday !== dateInLocalStorage) {
     updateLocalStorage('Time-concluded', timeConcluded);
     updateLocalStorage('Date-today', dateToday)
 }
-
-function countDown() {
-    if (timeInSeconds <= 0) {
-        imgBtnPlayPause.setAttribute('src', './images/play.svg')
-        audioAlert.play()
-        timeInSeconds = timeOfSessionInSeconds
-        showTimer();
-        reset()
-        const event = new CustomEvent('timeFinished')
-        document.dispatchEvent(event)
-
-        if (verificarContexto()) {
-            changeContext()
-            start()
-        } else {
-            changeContext()
-        }
-        return
-    }
-    console.log('Tempo decorrido em segundos:', timeInSeconds);
-    timeInSeconds--;
-
-    updateLocalStorage('Past-time', timeInSeconds)
-    
-    verificarContexto() ? timeConcluded ++ : false;
-    updateLocalStorage('Time-concluded', timeConcluded)
-    changeProgressBar()
-    showProgressText()
-    showTimer()
-}
-
-function start() {
-    if(interval) {
-        audioPause.play()
-        imgBtnPlayPause.setAttribute('src', './images/play.svg')
-        reset()
-        return
-    }
-    audioPlay.play()
-    imgBtnPlayPause.setAttribute('src', './images/pause.svg')
-    interval = setInterval(countDown, 1000)
-}
-
-function reset() {
-    clearInterval(interval)
-    interval = null
-}
-
-function showTimer() {
-    const timeDate = new Date(timeInSeconds * 1000)
-    const timeMinute = timeDate.toLocaleTimeString('pt-br',{minute: '2-digit'})
-    const timeSecond = timeDate.toLocaleTimeString('pt-br',{second: '2-digit'})
-
-    numberMinutes.textContent = `${timeMinute}`
-    numberSeconds.textContent = `${timeSecond}`
-}
-
-function timeFormattedText(timeInSeconds) {
+/** Formats the time in seconds into a human-readable text representation.
+ * It returns a string indicating the hours and minutes, or just minutes, depending on the duration.
+*/
+function formatTimeText(timeInSeconds) {
     let dateTimeConcluded = new Date(timeInSeconds * 1000);
     const hourFormated = dateTimeConcluded.getUTCHours()
     const minutesFormated = dateTimeConcluded.getUTCMinutes()
+    // Determine the appropriate text for hours and minutes
     const textHour = hourFormated === 1 ? 'hora' : 'horas'
     const textMinute = minutesFormated === 1 ? 'minuto' : 'minutos'
-
+    // if the time is less than an hour, return only the text in minutes, if it is greater, return minutes and hours
     if(timeInSeconds < 3600) {
         return `${minutesFormated} ${textMinute}`
     } else {
@@ -211,47 +230,58 @@ function timeFormattedText(timeInSeconds) {
     }
 }
 
+//Change the progress time and daily target texts in relation to the timeConcluded and targetDailyTime
 function showProgressText() {
-    textTimeProgress.textContent = timeFormattedText(timeConcluded)
+    textTimeProgress.textContent = formatTimeText(timeConcluded)
 }
-
 function changeTextGoal() {
-    textTargetTime.textContent = timeFormattedText(targetDailyTime)
+    textTargetTime.textContent = formatTimeText(targetDailyTime)
 }
 
+// Updates the progress bar on the UI based on the current completion progress.
 function changeProgressBar() {
     timeConcluded === 0 ? progress = 0 : progress += speed;
+    // Set the style of the progress bar based on the calculated progress percentage
     progressBar.setAttribute('style', `width: ${progress}%`)
     console.log('Progresso da barra:', progress)
 }
 
+// Initialize the variable to count consecutive days with completed goals
 let daysConcludeds = 0
+// Loop through the list of concluded times starting from the latest
 for(let i=listTimesCocludeds.length; i > 0; i--) {
     const element = listTimesCocludeds[i - 1];
+    // Check if the goal for the day was not completed
     if (!element.completedGoal) {
+        // If this is the latest entry, reset the count to 0
         if(i === listTimesCocludeds.length) {
             daysConcludeds = 0
         }
         i = 0
     } else {
+        // Increment the count for consecutive days with completed goals
         daysConcludeds ++;
     }
 }
+// Update the sequenceConcludeds variable and store it in localStorage
 sequenceConcludeds = daysConcludeds
 updateLocalStorage('Sequence-day', daysConcludeds)
-
+// Update the UI element to display the sequence information
 numberSequence.textContent = `${sequenceConcludeds} ${sequenceConcludeds === 1 ? 'dia' : 'dias'}`
 
-function showTxtYday() {
+// Updates the UI element displaying the formatted text representing the time concluded on the previous day
+function updatePreviousDayTimeText() {
+    //check if there is any existing time in the listTimesCocludeds
     if (listTimesCocludeds.length >= 1) {
         const timeYesterday = listTimesCocludeds[listTimesCocludeds.length -1];
         const timeConcluded = timeYesterday.timeConcluded || 0
-        textProgressYesteday.textContent = timeFormattedText(timeConcluded)
+        textProgressYesteday.textContent = formatTimeText(timeConcluded)
     }
 }
 
+// Update UI elements
 changeTextGoal()
-showTxtYday()
+updatePreviousDayTimeText()
 changeProgressBar()
 showProgressText()
 showTimer()
