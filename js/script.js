@@ -27,7 +27,7 @@ audioPlay.volume = 0.3;
 audioPause.volume = 0.2;
 
 // Initial Settings
-let timeOfSessionInSeconds = 100;
+let timeOfSessionInSeconds = 1500;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
 let timeInSeconds = JSON.parse(localStorage.getItem('Past-time')) || timeOfSessionInSeconds;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
