@@ -20,13 +20,13 @@
         if (granted) {
             if(contextRest) {
                 const notificationRest = new Notification('Se periodo de descanso acabou', {
-                    icon: './images/cronometro.png',
+                    icon: './images/icons/cronometro.png',
                     body: 'Gostaria de iniciar a sua sessão de concentração agora?'
                 })
                 notificationRest.addEventListener('click', () => document.dispatchEvent(new CustomEvent('notificationClickRest')))
             } else {
                 new Notification('Bom trabalho! você terminou sua sessão de concentração.', {
-                    icon: './images/cronometro.png',
+                    icon: './images/icons/cronometro.png',
                     body: 'Sua sessão de descanso ja começou'
                 })
             }

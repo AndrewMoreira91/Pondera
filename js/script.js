@@ -16,6 +16,7 @@ const modal = document.querySelector('#modal');
 const timerModal = document.querySelector("#timer-modal");
 const btnModal = document.querySelector('#button-modal')
 const textErroModal = document.querySelector('#text-erro')
+const btnDropdown = document.querySelector('#button-dropdown')
 
 // Audio Elements
 const audioAlert = new Audio('./sounds/alert.wav');
@@ -26,7 +27,7 @@ audioPlay.volume = 0.3;
 audioPause.volume = 0.2;
 
 // Initial Settings
-let timeOfSessionInSeconds = 1500;
+let timeOfSessionInSeconds = 100;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
 let timeInSeconds = JSON.parse(localStorage.getItem('Past-time')) || timeOfSessionInSeconds;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
@@ -48,10 +49,12 @@ let dateInLocalStorage = JSON.parse(localStorage.getItem('Date-today')) || false
 // If not exist a date in local storage, assign today's date to the variable
 dateInLocalStorage = dateInLocalStorage  ? dateInLocalStorage : dateToday 
 
+const openModal = () => [fadeModal, modal].forEach(element => element.classList.toggle('hide'))
+
 // Check if there s a target daily time set, if not, show the modal.
-if (!targetDailyTime) {
-    [fadeModal, modal].forEach(element => element.classList.toggle('hide')) 
-}
+!targetDailyTime ? openModal() : false
+
+btnDropdown.onclick = () => openModal()
 
 // Event listeners
 btnPlayPause.addEventListener('click', start);
@@ -117,12 +120,12 @@ let intervalTimer = null;
 function start() {
     if(intervalTimer) {
         audioPause.play()
-        imgBtnPlayPause.setAttribute('src', './images/play.svg')
+        imgBtnPlayPause.setAttribute('src', './images/icons/play.svg')
         resetTimer()
         return
     }
     audioPlay.play()
-    imgBtnPlayPause.setAttribute('src', './images/pause.svg')
+    imgBtnPlayPause.setAttribute('src', './images/icons/pause.svg')
     intervalTimer = setInterval(countDown, 1000)
 }
 
@@ -132,7 +135,7 @@ function start() {
  */
 function countDown() {
     if (timeInSeconds <= 0) {
-        imgBtnPlayPause.setAttribute('src', './images/play.svg')
+        imgBtnPlayPause.setAttribute('src', './images/icons/play.svg')
         audioAlert.play()
         timeInSeconds = timeOfSessionInSeconds
         const event = new CustomEvent('timeFinished')
@@ -170,8 +173,10 @@ function resetTimer() {
  */
 function showTimer() {
     const timeDate = new Date(timeInSeconds * 1000)
-    const timeMinute = timeDate.toLocaleTimeString('pt-br',{minute: '2-digit'})
-    const timeSecond = timeDate.toLocaleTimeString('pt-br',{second: '2-digit'})
+    let timeMinute = timeDate.toLocaleTimeString('pt-br',{minute: '2-digit'})
+    timeMinute = timeMinute <= 9 ? '0'+ timeMinute : timeMinute
+    let timeSecond = timeDate.toLocaleTimeString('pt-br',{second: '2-digit'})
+    timeSecond = timeSecond <=9 ? '0' + timeSecond : timeSecond
     numberMinutes.textContent = `${timeMinute}`
     numberSeconds.textContent = `${timeSecond}`
 }

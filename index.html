@@ -18,8 +18,41 @@
 </head>
 <body>
 
-    <header id="app--header-container">
-
+    <header>
+        <div id="app--header-container">
+            <section class="app--header-logo">
+                <div class="app--header-logo-conteiner">
+                    <img src="images/logo/logo-icon.svg" alt="logo-icon">
+                    <span>PONDERA</span>
+                </div>
+            </section>
+            <section class="app--header-options">
+                <div class="app--header-options-conteiner">
+                    <div class="app--header-links">
+                        <ul>
+                            <li><a href="#">Início</a></li>
+                            <li><a href="#">DashBoard</a></li>
+                            <li>
+                                <div id="dropdown-menus-conteiner">
+                                    <button id="button-dropdown">
+                                        Menu
+                                        <img src="./images/icons/menu.svg" alt="menu">
+                                    </button>
+                                    <ul id="ul-dropdown">
+                                        <li>
+                                            <button>Mudar meta diária</button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="app--header-img-user">
+                        <img src="./images/Male.jpg" alt="">
+                    </div>
+                </div>
+            </section>
+        </div>
     </header>
 
     <main >
@@ -34,17 +67,17 @@
                     <ul class="app--card-list">
                         <li class="app--card-list-item">
                             <button class="app--card-button app--card-button-reset">
-                                <img class="img-card-button-reset" src="images/device_reset.svg" alt="3 pontos">
+                                <img class="img-card-button-reset" src="images/icons/device_reset.svg" alt="3 pontos">
                             </button>
                         </li>
                         <li class="app--card-list-item">
                             <button class="app--card-button app--card-button-play-pause">
-                                <img class="img-card-button-play" src="images/play.svg" alt="botão de play">
+                                <img class="img-card-button-play" src="images/icons/play.svg" alt="botão de play">
                             </button>
                         </li>
                         <li class="app--card-list-item">
                             <button class="app--card-button app--card-button-next">
-                                <img class="img-card-button-next" src="images/ph_fast-forward.svg" alt="botão de proximo">
+                                <img class="img-card-button-next" src="images/icons/ph_fast-forward.svg" alt="botão de proximo">
                             </button>
                         </li>
                     </ul>
@@ -78,7 +111,7 @@
                         <div class="app--create-new-task-input-button">
                             <input id="input-create-new-task" type="text" placeholder="Crie uma nova tarefa">
                             <button class="app--card-create-new-task-button">
-                                <img src="images/add.svg" alt="">
+                                <img src="images/icons/add.svg" alt="">
                             </button>
                         </div>
                     </div>

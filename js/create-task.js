@@ -32,11 +32,11 @@ function createTaskElement(task) {
     const btnEdit = document.createElement('button');
     btnEdit.classList.add('app-card-task-button');
     const imgEdit = document.createElement('img');
-    imgEdit.setAttribute('src', './images/edit.svg');
+    imgEdit.setAttribute('src', './images/icons/edit.svg');
     const btnCheck = document.createElement('button');
     btnCheck.classList.add('app-card-task-button', 'hidden');
     const imgCheck = document.createElement('img');
-    imgCheck.setAttribute('src', './images/check.svg');
+    imgCheck.setAttribute('src', './images/icons/check.svg');
 
     // Appending child elements
     btnCheck.append(imgCheck);
