@@ -45,7 +45,7 @@ header #app--header-container {
 }
 
 .app--header-options-conteiner {
-    display: flex;
+    display: none;
     justify-content: flex-end;
     align-items: center;
     height: 45px;

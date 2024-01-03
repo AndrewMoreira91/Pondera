@@ -29,11 +29,20 @@ audioPause.volume = 0.2;
 // Initial Settings
 let timeOfSessionInSeconds = 1500;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
-let timeInSeconds = JSON.parse(localStorage.getItem('Past-time')) || timeOfSessionInSeconds;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
 let listTimesCocludeds = JSON.parse(localStorage.getItem('List-time-concluded')) || [];
 let sequenceConcludeds = JSON.parse(localStorage.getItem('Sequence-day'))
 let intervalRest = null
+const title = 'Pondera'
+
+let timeInSeconds = timeOfSessionInSeconds
+let pastTimeObject = JSON.parse(localStorage.getItem('Past-time')) || false
+console.log(pastTimeObject)
+if(pastTimeObject) {
+    timeInSeconds =  checkContext() ? pastTimeObject.timeFocus : pastTimeObject.timeRest
+} else {
+    pastTimeObject = {}
+}
 
 let completedGoal = false;  // 
 
@@ -45,9 +54,8 @@ let progress = speed * timeConcluded;
 
 let dateToday = new Date();
 dateToday =  dateToday.toLocaleDateString(); // Get today's date
-let dateInLocalStorage = JSON.parse(localStorage.getItem('Date-today')) || false // Check if exist a date in local storage
-// If not exist a date in local storage, assign today's date to the variable
-dateInLocalStorage = dateInLocalStorage  ? dateInLocalStorage : dateToday 
+let dateInLocalStorage = JSON.parse(localStorage.getItem('Date-today')) || dateToday // Check if exist a date in local storage
+updateLocalStorage('Date-today', dateToday)
 
 const openModal = () => [fadeModal, modal].forEach(element => element.classList.toggle('hide'))
 
@@ -91,7 +99,8 @@ btnModal.addEventListener('click', () => {
 //The context changes when the clock time changes between focus or rest session
 function changeContext() {
     if (checkContext()) {
-        timeOfSessionInSeconds = 900;
+        timeRest = pastTimeObject.timeRest || 900
+        timeOfSessionInSeconds = timeRest;
         
         const event = new CustomEvent('Context-rest')
         document.dispatchEvent(event)
@@ -100,7 +109,8 @@ function changeContext() {
         updateRestIndicator()
         showTimer()
     } else {
-        timeOfSessionInSeconds = 1500
+        timeFocus = pastTimeObject.timeFocus || 1500
+        timeOfSessionInSeconds = timeFocus
 
         textTaskProgress.textContent = textDefault;
         html.setAttribute('data-contexto', 'foco')
@@ -122,6 +132,7 @@ function start() {
         audioPause.play()
         imgBtnPlayPause.setAttribute('src', './images/icons/play.svg')
         resetTimer()
+        document.title = title
         return
     }
     audioPlay.play()
@@ -153,8 +164,9 @@ function countDown() {
     // Increment timeConcluded if in rest context
     checkContext() ? timeConcluded ++ : updateRestIndicator();
     updateLocalStorage('Time-concluded', timeConcluded)
-    // Update local storage with the current timer value
-    updateLocalStorage('Past-time', timeInSeconds)
+
+    checkContext() ? pastTimeObject.timeFocus = timeInSeconds : pastTimeObject.timeRest = timeInSeconds
+    updateLocalStorage('Past-time', pastTimeObject)
     // Update UI elements
     changeProgressBar()
     showProgressText()
@@ -177,6 +189,8 @@ function showTimer() {
     timeMinute = timeMinute <= 9 ? '0'+ timeMinute : timeMinute
     let timeSecond = timeDate.toLocaleTimeString('pt-br',{second: '2-digit'})
     timeSecond = timeSecond <=9 ? '0' + timeSecond : timeSecond
+    let textTitle = `${timeMinute} : ${timeSecond}`
+    document.title = checkContext() ? 'Concentração ' + textTitle : 'Descanso ' + textTitle
     numberMinutes.textContent = `${timeMinute}`
     numberSeconds.textContent = `${timeSecond}`
 }
@@ -216,6 +230,10 @@ if (dateToday !== dateInLocalStorage) {
     timeConcluded = 0;
     updateLocalStorage('Time-concluded', timeConcluded);
     updateLocalStorage('Date-today', dateToday)
+    pastTimeObject = false
+    updateLocalStorage('Past-time', pastTimeObject)
+    timeInSeconds = timeOfSessionInSeconds
+    showTimer()
 }
 /** Formats the time in seconds into a human-readable text representation.
  * It returns a string indicating the hours and minutes, or just minutes, depending on the duration.
@@ -290,3 +308,4 @@ updatePreviousDayTimeText()
 changeProgressBar()
 showProgressText()
 showTimer()
+document.title = title
