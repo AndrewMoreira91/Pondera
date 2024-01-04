@@ -300,16 +300,46 @@ main {
 
 
 .app--card-tasks-content {
-    overflow-y: scroll;
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    overflow: hidden;
 }
 
-.app--card-tasks-content::-webkit-scrollbar {
+.app--card-list-conteiner {
+    overflow-y: scroll;
+
+}
+
+.app--card-list-conteiner::-webkit-scrollbar {
     width: 5px;
 }
 
-.app--card-tasks-content::-webkit-scrollbar-thumb {
+.app--card-list-conteiner::-webkit-scrollbar-thumb {
     background-color: var(--color-orange-top);
     border-radius: 10px;
+}
+
+.btn-clear-task-concluded {
+    font-size: 0.7rem;
+    align-self: self-start;
+    text-align: start;
+    font-weight: 300;
+    height: 30px;
+    color: #cccccc;
+    background: none;
+    border: 1px solid var(--color-orange-top);
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 16px;
+
+    cursor: pointer;
+    transition: 200ms ease;
+}
+
+.btn-clear-task-concluded:hover {
+    background-color: var(--color-orange-top);
+    color: var(--color-white);
 }
 
 .app--card-create-new-task-container {

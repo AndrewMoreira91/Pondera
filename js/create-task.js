@@ -4,6 +4,7 @@ const conteinerInput = document.querySelector('.app--create-new-task-input-butto
 const btnCreateNewTask = document.querySelector('.app--card-create-new-task-button');
 const ulTasksList = document.querySelector('.app--card-tasks-list');
 const textTaskProgress = document.querySelector('#task-in-progress');
+const btnClearTaskConcluded = document.querySelector('.btn-clear-task-concluded')
 
 // Initializing variables from local storage or using defaults
 let taskList = JSON.parse(localStorage.getItem('Tasks')) || [];
@@ -143,10 +144,21 @@ function submitNewTask() {
     }
 }
 
-// Function to update tasks in local storage
-function updateTasksStorage() {
-    localStorage.setItem('Tasks', JSON.stringify(taskList));
+// Function to create and display tasks in the UI
+function createTasks() {
+    console.log(taskList);
+    taskList.forEach(task => {
+        const taskElement = createTaskElement(task);
+        ulTasksList.append(taskElement);
+    });
 }
+
+btnClearTaskConcluded.addEventListener('click', () => {
+    // Removing completed tasks from the list    
+    taskList = taskList.filter(task => !task.complete);
+    updateTasksStorage();
+    createTasks()
+});
 
 // Event listener for timeFinished event
 document.addEventListener('timeFinished', () => {
@@ -160,6 +172,11 @@ document.addEventListener('timeFinished', () => {
     }
 });
 
+// Function to update tasks in local storage
+function updateTasksStorage() {
+    localStorage.setItem('Tasks', JSON.stringify(taskList));
+}
+
 // Event listener for Context-descanso event
 document.addEventListener('Context-rest', () => {
     // Disabling task items during rest context
@@ -169,13 +186,6 @@ document.addEventListener('Context-rest', () => {
     });
 });
 
-// Function to create and display tasks in the UI
-function createTasks() {
-    taskList.forEach(task => {
-        const taskElement = createTaskElement(task);
-        ulTasksList.append(taskElement);
-    });
-}
 
 // Initial creation and display of tasks when the page loads
 createTasks();

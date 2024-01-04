@@ -27,7 +27,8 @@ audioPlay.volume = 0.3;
 audioPause.volume = 0.2;
 
 // Initial Settings
-let timeOfSessionInSeconds = 1500;
+let timeFocus = 3;
+let timeRest = 300;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
 let listTimesCocludeds = JSON.parse(localStorage.getItem('List-time-concluded')) || [];
@@ -35,14 +36,7 @@ let sequenceConcludeds = JSON.parse(localStorage.getItem('Sequence-day'))
 let intervalRest = null
 const title = 'Pondera'
 
-let timeInSeconds = timeOfSessionInSeconds
-let pastTimeObject = JSON.parse(localStorage.getItem('Past-time')) || false
-console.log(pastTimeObject)
-if(pastTimeObject) {
-    timeInSeconds =  checkContext() ? pastTimeObject.timeFocus : pastTimeObject.timeRest
-} else {
-    pastTimeObject = {}
-}
+let timeInSeconds = timeFocus
 
 let completedGoal = false;  // 
 
@@ -68,8 +62,8 @@ btnDropdown.onclick = () => openModal()
 btnPlayPause.addEventListener('click', start);
 btnNext.addEventListener('click', changeContext)
 btnReset.addEventListener('click', () => {
-    timeInSeconds = timeOfSessionInSeconds;
-    updateLocalStorage('Past-time', timeInSeconds);
+    timeInSeconds = timeFocus;
+
     showTimer();
 })
 document.addEventListener('notificationClickRest', start);
@@ -99,22 +93,18 @@ btnModal.addEventListener('click', () => {
 //The context changes when the clock time changes between focus or rest session
 function changeContext() {
     if (checkContext()) {
-        timeRest = pastTimeObject.timeRest || 900
-        timeOfSessionInSeconds = timeRest;
+        timeInSeconds = timeRest;
         
         const event = new CustomEvent('Context-rest')
         document.dispatchEvent(event)
         html.setAttribute('data-contexto', 'descanso')
-        timeInSeconds = timeOfSessionInSeconds
         updateRestIndicator()
         showTimer()
     } else {
-        timeFocus = pastTimeObject.timeFocus || 1500
-        timeOfSessionInSeconds = timeFocus
+        timeInSeconds = timeFocus
 
         textTaskProgress.textContent = textDefault;
         html.setAttribute('data-contexto', 'foco')
-        timeInSeconds = timeOfSessionInSeconds
         clearInterval(intervalRest)
         showTimer()
     }
@@ -129,7 +119,7 @@ function checkContext() {
 let intervalTimer = null; 
 function start() {
     if(intervalTimer) {
-        audioPause.play()
+        // audioPause.play()
         imgBtnPlayPause.setAttribute('src', './images/icons/play.svg')
         resetTimer()
         document.title = title
@@ -147,8 +137,8 @@ function start() {
 function countDown() {
     if (timeInSeconds <= 0) {
         imgBtnPlayPause.setAttribute('src', './images/icons/play.svg')
-        audioAlert.play()
-        timeInSeconds = timeOfSessionInSeconds
+        // audioAlert.play()
+        timeInSeconds = changeContext ? timeFocus : timeRest
         const event = new CustomEvent('timeFinished')
         document.dispatchEvent(event)
         resetTimer()
@@ -165,8 +155,6 @@ function countDown() {
     checkContext() ? timeConcluded ++ : updateRestIndicator();
     updateLocalStorage('Time-concluded', timeConcluded)
 
-    checkContext() ? pastTimeObject.timeFocus = timeInSeconds : pastTimeObject.timeRest = timeInSeconds
-    updateLocalStorage('Past-time', pastTimeObject)
     // Update UI elements
     changeProgressBar()
     showProgressText()
@@ -230,9 +218,8 @@ if (dateToday !== dateInLocalStorage) {
     timeConcluded = 0;
     updateLocalStorage('Time-concluded', timeConcluded);
     updateLocalStorage('Date-today', dateToday)
-    pastTimeObject = false
-    updateLocalStorage('Past-time', pastTimeObject)
-    timeInSeconds = timeOfSessionInSeconds
+    // Update the UI element to display the sequence information
+    timeInSeconds = timeFocus
     showTimer()
 }
 /** Formats the time in seconds into a human-readable text representation.
