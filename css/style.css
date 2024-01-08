@@ -45,14 +45,14 @@ header #app--header-container {
 }
 
 .app--header-options-conteiner {
-    display: none;
+    display: flex;
     justify-content: flex-end;
     align-items: center;
     height: 45px;
     gap: 72px;
 }
 
-.app--header-links ul {
+.app--header-links > ul {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -73,27 +73,43 @@ header #app--header-container {
     background: rgba(255, 255, 255, 0.137);
 }
 
-.app--header-img-user img {
-    border-radius: 50%;
-    border: 1px solid var(--color-orange-top);
-}
-
-#dropdown-conteiner {
+.menu-dropdown {
     position: relative;
 }
 
-#ul-dropdown {
-    display: none;
-    position: absolute;
-    z-index: 10;
-    right: 0;
-    transform: translateX(-37%);
-    min-width: 24rem;
+.app--header-img-user img {
+    border-radius: 50%;
+    border: 1px solid var(--color-orange-top);
+    cursor: pointer;
 }
 
-#ul-dropdown:hover,
-#button-dropdown:hover ~ #ul-dropdown:hover {
+.menu-dropdown .ul-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    z-index: 10;
+    width: 200px;
+    border-radius: 8px;
+    background: var(--color-white);
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: 300ms ease-in-out;
+}
+
+.ul-dropdown li:hover {
+    transition: 0.3s;
+    background: #2009532d;
+}
+
+.menu-dropdown a, .menu-dropdown button  {
+    padding: 8px 12px;
+    background-color: transparent;
+    width: 100%;
     display: block;
+    color: #000;
+    cursor: pointer;
+    text-align: start;
 }
 
 main {
@@ -140,11 +156,6 @@ main {
 
 .app--card-timer span {
     display: block;
-}
-
-.app--card-timer {
-    display: flex;
-    flex-direction: row;
 }
 
 .card-timer-count {
@@ -320,24 +331,22 @@ main {
     border-radius: 10px;
 }
 
-.btn-clear-task-concluded {
+.btn-clear-task {
     font-size: 0.7rem;
     align-self: self-start;
     text-align: start;
     font-weight: 300;
-    height: 30px;
     color: #cccccc;
     background: none;
     border: 1px solid var(--color-orange-top);
     border-radius: 6px;
-    padding: 8px;
-    margin-top: 16px;
+    padding: 6px 8px;
 
     cursor: pointer;
     transition: 200ms ease;
 }
 
-.btn-clear-task-concluded:hover {
+.btn-clear-task:hover {
     background-color: var(--color-orange-top);
     color: var(--color-white);
 }
@@ -428,6 +437,11 @@ main {
     overflow: hidden;
 }
 
+.app-card-task-buttons-conteiner {
+    display: flex;
+    flex-direction: row;
+}
+
 .app-card-task-item:hover {
     background: rgba(255, 255, 255, 0.10);
 }
@@ -441,7 +455,9 @@ main {
 }
 
 .app-card-task-item span {
+    overflow: hidden;
     display: flex;
+    max-width: 100%;
     align-items: center;
     height: 30px;
 }
@@ -504,7 +520,7 @@ main {
     background: rgba(0, 0, 0, 0.40);
 }
 
-#modal {
+#modal-chose-timer {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -524,7 +540,7 @@ main {
     display: inline-flex;
 }
 
-#title-modal {
+#title-modal-chose-timer {
     color: var(--color-orange-top);
     font-size: 36px;
     font-style: normal;
@@ -532,7 +548,7 @@ main {
     line-height: 85%; /* 30.6px */
 }
 
-#title-modal .nameLogo {
+#title-modal-chose-timer .nameLogo {
     font-weight: 800;
     color: #272727;
     background-color: #e9e9e9;
@@ -547,7 +563,7 @@ main {
     background-color: #00000021;
 }
 
-#description-modal {
+#description-modal-chose-timer {
     align-self: stretch;
     color: #393939;
     text-align: justify;
@@ -579,7 +595,7 @@ main {
     gap: 24px;
 }
 
-#timer-modal {
+#timer-modal-chose-timer {
     width: 100%;
     height: 50px;
     font-size: 1.5rem;
@@ -590,11 +606,11 @@ main {
     border: 1px solid var(--color-orange-top);
 }
 
-#timer-modal:focus {
+#timer-modal-chose-timer:focus {
     outline: none;
 }
 
-#button-modal {
+#button-modal-chose-timer {
     color: var(--color-white);
     width: 300px;
     font-size: 16px;
@@ -610,14 +626,78 @@ main {
     cursor: pointer;
 }
 
-#button-modal:hover {
+#button-modal-chose-timer:hover {
     transition: 200ms;
     opacity: 1;
+}
+
+#modal-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    color: #272727;
+    text-align: center;
+    padding: 8px 16px;
+    border-radius: 16px;
+}
+
+#modal-alert h3 {
+    font-size: 28px;
+    font-weight: 700;
+    color: red;
+}
+
+#modal-alert p {
+    font-family: roboto, sans-serif;
+    margin-top: 16px;
+}
+
+.modal-alert-footer {
+    display: flex;
+    justify-content: start;
+    gap: 8px;
+}
+
+.modal-alert-button {
+    border: none;
+    background-color: transparent;
+    border: 1px solid var(--color-orange-top);
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-top: 16px;
+    font-weight: 500;
+
+    cursor: pointer;
+    transition: 200ms;
+}
+
+.modal-alert-button:hover {
+    color: var(--color-orange-top);
+}
+
+.modal-alert-button-confirm {
+    background-color: var(--color-orange-top);
+    color: var(--color-white);
+    opacity: 0.8;
+}
+
+.modal-alert-button-confirm:hover {
+    opacity: 1;
+    color: #fff;
 }
 
 .hide {
     opacity: 0;
     pointer-events: none;
+    transition: 300ms;
+}
+
+.visible {
+    transition: 300ms;
+    opacity: 1;
+    pointer-events: all;
 }
 
 /* Para Tablets */

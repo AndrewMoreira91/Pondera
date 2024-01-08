@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br" data-contexto="foco">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,7 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/reset.css">
 
-    <link rel="icon" type="image/png" sizes="16x16"  href="/images/favicons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
 
@@ -16,6 +17,7 @@
     <script src="./js/create-task.js" defer></script>
     <script src="./js/notification.js" defer></script>
 </head>
+
 <body>
 
     <header>
@@ -32,30 +34,24 @@
                         <ul>
                             <li><a href="#">Início</a></li>
                             <li><a href="#">DashBoard</a></li>
-                            <li>
-                                <div id="dropdown-menus-conteiner">
-                                    <button id="button-dropdown">
-                                        Menu
-                                        <img src="./images/icons/menu.svg" alt="menu">
-                                    </button>
-                                    <ul id="ul-dropdown">
-                                        <li>
-                                            <button>Mudar meta diária</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
                         </ul>
                     </div>
-                    <div class="app--header-img-user">
-                        <img src="./images/Male.jpg" alt="">
+                    <div class="menu-dropdown">
+                        <div class="app--header-img-user">
+                            <img src="./images/Male.jpg" alt="">
+                        </div>
+                        <ul class="ul-dropdown">
+                            <li><a href="#">Perfil</a></li>
+                            <li><button class="btn-open-config">Configurações</button></li>
+                            <li><a href="#">Sair</a></li>
+                        </ul>
                     </div>
                 </div>
             </section>
         </div>
     </header>
 
-    <main >
+    <main>
 
         <div id="app--main-container">
             <section class="app-section-timer-container">
@@ -77,7 +73,8 @@
                         </li>
                         <li class="app--card-list-item">
                             <button class="app--card-button app--card-button-next">
-                                <img class="img-card-button-next" src="images/icons/ph_fast-forward.svg" alt="botão de proximo">
+                                <img class="img-card-button-next" src="images/icons/ph_fast-forward.svg"
+                                    alt="botão de proximo">
                             </button>
                         </li>
                     </ul>
@@ -103,7 +100,8 @@
                 </div>
                 <div class="app-card-info-item app-card-info-sequence-day">
                     <h3 class="info-text-sequence">Sequência de <span id="number-sequence-day">0</span></h3>
-                    <span id="text-info-sequence">Ontem você teve um tempo de <span id="time-progress-yesterday">0 horas e 0 minutos</span> de concentração</span>
+                    <span id="text-info-sequence">Ontem você teve um tempo de <span id="time-progress-yesterday">0 horas
+                            e 0 minutos</span> de concentração</span>
                 </div>
                 <div class="app-card-info-item app-card-tasks-container">
                     <div class="app--card-create-new-task-container">
@@ -120,7 +118,11 @@
                             <span id="text-info-tasks">Selecione a tarefa para a sua sessão de concentração</span>
                             <ul class="app--card-tasks-list"></ul>
                         </div>
-                        <button class="btn-clear-task-concluded">Apagar todos as tarefas Concluidas</button>
+                        <div class="btn-conteiner">
+                            <button class="btn-clear-task btn-clear-all-task">Apagar todos as tarefas</button>
+                            <button class="btn-clear-task btn-clear-task-concluded">Apagar todos as tarefas
+                                Concluidas</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -128,26 +130,47 @@
 
     </main>
 
-    <section class="app--card-modal-cotainer">
+    <section class="app--card-modal-chose-timer-cotainer">
         <div class="hide" id="fade-modal"></div>
-        <div class="hide" id="modal">
-            <h3 id="title-modal">Bem Vindo ao <strong class="nameLogo">Pondera</strong></h3>
-            <p id="description-modal">
-                Este site foi desenvolvido para auxiliar na criação do hábito de estudo através da técnica Pomodoro. Para personalizar sua experiência, precisamos saber quanto tempo diário você pretende dedicar à concentração. 
+        <div class="hide" id="modal-chose-timer">
+            <h3 id="title-modal-chose-timer">Bem Vindo ao <strong class="nameLogo">Pondera</strong></h3>
+            <p id="description-modal-chose-timer">
+                Este site foi desenvolvido para auxiliar na criação do hábito de estudo através da técnica Pomodoro.
+                Para personalizar sua experiência, precisamos saber quanto tempo diário você pretende dedicar à
+                concentração.
             </p>
             <div id="line"></div>
             <p id="text-aviso">
                 Por favor, informe-nos a quantidade de tempo que você planeja reservar diariamente para seus estudos.
             </p>
             <span id="text-erro" class="hidden hide">
-                Para continuarmos precisamos que o campo de escolha esteja preenchido. <br> Por favor verifique se está preenchido corretamente.
+                Para continuarmos precisamos que o campo de escolha esteja preenchido. <br> Por favor verifique se está
+                preenchido corretamente.
             </span>
             <div id="cotainer-input-button">
-                <input id="timer-modal" type="time" value="00:30">
-                <button id="button-modal">Pronto</button>
+                <input id="timer-modal-chose-timer" type="time" value="00:30">
+                <button id="button-modal-chose-timer">Pronto</button>
             </div>
         </div>
     </section>
-    
+
+    <section class="hide" id="modal-alert">
+        <div class="modal-alert-container">
+            <div class="modal-alert-content">
+                <div class="modal-alert-header">
+                    <h3 class="modal-alert-title">Atenção</h3>
+                </div>
+                <div class="modal-alert-body">
+                    <p class="modal-alert-text">Você tem certeza que deseja apagar todas as tarefas?</p>
+                </div>
+                <div class="modal-alert-footer">
+                    <button class="modal-alert-button modal-alert-button-cancel">Cancelar</button>
+                    <button class="modal-alert-button modal-alert-button-confirm">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </body>
+
 </html>

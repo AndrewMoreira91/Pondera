@@ -12,11 +12,25 @@ const numberSequence = document.querySelector('#number-sequence-day');
 const textTargetTime = document.querySelector('#text-target-time');
 const btnNext = document.querySelector('.app--card-button-next');
 const fadeModal = document.querySelector('#fade-modal');
-const modal = document.querySelector('#modal');
-const timerModal = document.querySelector("#timer-modal");
-const btnModal = document.querySelector('#button-modal')
+const modalChoseTimer = document.querySelector('#modal-chose-timer');
+const timerModal = document.querySelector("#timer-modal-chose-timer");
+const btnModalChoseTimer = document.querySelector('#button-modal-chose-timer')
 const textErroModal = document.querySelector('#text-erro')
-const btnDropdown = document.querySelector('#button-dropdown')
+const taskListConteiner = document.querySelector('.app--card-list-conteiner')
+const menuDropdown = document.querySelector('.menu-dropdown')
+const ulDropdown = document.querySelector('.ul-dropdown')
+const btnOpenConfig = document.querySelector('.btn-open-config')
+
+menuDropdown.addEventListener('click', () => {
+    if (ulDropdown.style.opacity === '1') {
+        ulDropdown.style.opacity = 0
+        ulDropdown.style.pointerEvents = 'none'
+    }
+    else {
+        ulDropdown.style.opacity = 1
+        ulDropdown.style.pointerEvents = 'all'
+    }
+})
 
 // Audio Elements
 const audioAlert = new Audio('./sounds/alert.wav');
@@ -27,7 +41,7 @@ audioPlay.volume = 0.3;
 audioPause.volume = 0.2;
 
 // Initial Settings
-let timeFocus = 3;
+let timeFocus = 1500;
 let timeRest = 300;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
@@ -47,16 +61,16 @@ let speed = 1 / (targetDailyTime / 100);
 let progress = speed * timeConcluded;
 
 let dateToday = new Date();
-dateToday =  dateToday.toLocaleDateString(); // Get today's date
+dateToday = dateToday.toLocaleDateString(); // Get today's date
 let dateInLocalStorage = JSON.parse(localStorage.getItem('Date-today')) || dateToday // Check if exist a date in local storage
 updateLocalStorage('Date-today', dateToday)
 
-const openModal = () => [fadeModal, modal].forEach(element => element.classList.toggle('hide'))
+const openModal = () => [fadeModal, modalChoseTimer].forEach(element => element.classList.toggle('hide'))
 
 // Check if there s a target daily time set, if not, show the modal.
 !targetDailyTime ? openModal() : false
 
-btnDropdown.onclick = () => openModal()
+btnOpenConfig.addEventListener('click', openModal)
 
 // Event listeners
 btnPlayPause.addEventListener('click', start);
@@ -68,15 +82,26 @@ btnReset.addEventListener('click', () => {
 })
 document.addEventListener('notificationClickRest', start);
 
-// Function to handle modal button click
-btnModal.addEventListener('click', () => {
+timerModal.addEventListener('input', () => {
     const [hour, minutes] = timerModal.value.split(':').map(Number);
-    if( hour >= 0 && minutes) {
-        targetDailyTime =  hour * 3600 + minutes * 60
+    console.log('horas:', hour, 'minutos:', minutes)
+    if (hour >= 0 && minutes) {
+        textErroModal.classList.add('hidden', 'hide')
+    } else {
+        textErroModal.classList.remove('hidden', 'hide')
+    }
+})
+
+// Function to handle modal button click
+btnModalChoseTimer.addEventListener('click', () => {
+    const [hour, minutes] = timerModal.value.split(':').map(Number);
+    console.log(hour, minutes)
+    if (hour >= 0 && minutes) {
+        targetDailyTime = hour * 3600 + minutes * 60
         updateLocalStorage('Target-time', targetDailyTime)
 
         fadeModal.classList.add('hide')
-        modal.classList.add('hide')
+        modalChoseTimer.classList.add('hide')
 
         speed = 1 / (targetDailyTime / 100)
         progress = speed * timeConcluded
@@ -94,7 +119,14 @@ btnModal.addEventListener('click', () => {
 function changeContext() {
     if (checkContext()) {
         timeInSeconds = timeRest;
-        
+
+        document.querySelectorAll('.app-card-task-item').forEach(Element => {
+            if (Element.classList.contains('app-card-task-item-complete')) {
+                Element.classList.add('disabled');
+                Element.classList.remove('app-card-task-item-active');
+            }
+        });
+
         const event = new CustomEvent('Context-rest')
         document.dispatchEvent(event)
         html.setAttribute('data-contexto', 'descanso')
@@ -102,6 +134,10 @@ function changeContext() {
         showTimer()
     } else {
         timeInSeconds = timeFocus
+
+        document.querySelectorAll('.app-card-task-item').forEach(Element => {
+            Element.classList.remove('disabled');
+        });
 
         textTaskProgress.textContent = textDefault;
         html.setAttribute('data-contexto', 'foco')
@@ -116,10 +152,10 @@ function checkContext() {
 }
 
 // Function to start the timer
-let intervalTimer = null; 
+let intervalTimer = null;
 function start() {
-    if(intervalTimer) {
-        // audioPause.play()
+    if (intervalTimer) {
+        audioPause.play()
         imgBtnPlayPause.setAttribute('src', './images/icons/play.svg')
         resetTimer()
         document.title = title
@@ -137,7 +173,7 @@ function start() {
 function countDown() {
     if (timeInSeconds <= 0) {
         imgBtnPlayPause.setAttribute('src', './images/icons/play.svg')
-        // audioAlert.play()
+        audioAlert.play()
         timeInSeconds = changeContext ? timeFocus : timeRest
         const event = new CustomEvent('timeFinished')
         document.dispatchEvent(event)
@@ -149,10 +185,9 @@ function countDown() {
         return
     }
     console.log('Tempo decorrido em segundos:', timeInSeconds);
-    // Decrement the timer
     timeInSeconds--;
-    // Increment timeConcluded if in rest context
-    checkContext() ? timeConcluded ++ : updateRestIndicator();
+
+    checkContext() ? timeConcluded++ : updateRestIndicator();
     updateLocalStorage('Time-concluded', timeConcluded)
 
     // Update UI elements
@@ -173,10 +208,10 @@ function resetTimer() {
  */
 function showTimer() {
     const timeDate = new Date(timeInSeconds * 1000)
-    let timeMinute = timeDate.toLocaleTimeString('pt-br',{minute: '2-digit'})
-    timeMinute = timeMinute <= 9 ? '0'+ timeMinute : timeMinute
-    let timeSecond = timeDate.toLocaleTimeString('pt-br',{second: '2-digit'})
-    timeSecond = timeSecond <=9 ? '0' + timeSecond : timeSecond
+    let timeMinute = timeDate.toLocaleTimeString('pt-br', { minute: '2-digit' })
+    timeMinute = timeMinute <= 9 ? '0' + timeMinute : timeMinute
+    let timeSecond = timeDate.toLocaleTimeString('pt-br', { second: '2-digit' })
+    timeSecond = timeSecond <= 9 ? '0' + timeSecond : timeSecond
     let textTitle = `${timeMinute} : ${timeSecond}`
     document.title = checkContext() ? 'Concentração ' + textTitle : 'Descanso ' + textTitle
     numberMinutes.textContent = `${timeMinute}`
@@ -189,9 +224,9 @@ function showTimer() {
  */
 let dots = ''
 function updateRestIndicator() {
-    if(!checkContext()) {
+    if (!checkContext()) {
         textTaskProgress.textContent = 'Descansando' + dots
-        if(dots === '...') {
+        if (dots === '...') {
             return dots = ''
         }
         dots += '.'
@@ -233,7 +268,7 @@ function formatTimeText(timeInSeconds) {
     const textHour = hourFormated === 1 ? 'hora' : 'horas'
     const textMinute = minutesFormated === 1 ? 'minuto' : 'minutos'
     // if the time is less than an hour, return only the text in minutes, if it is greater, return minutes and hours
-    if(timeInSeconds < 3600) {
+    if (timeInSeconds < 3600) {
         return `${minutesFormated} ${textMinute}`
     } else {
         return `${hourFormated} ${textHour} e ${minutesFormated} ${textMinute}`
@@ -259,18 +294,18 @@ function changeProgressBar() {
 // Initialize the variable to count consecutive days with completed goals
 let daysConcludeds = 0
 // Loop through the list of concluded times starting from the latest
-for(let i=listTimesCocludeds.length; i > 0; i--) {
+for (let i = listTimesCocludeds.length; i > 0; i--) {
     const element = listTimesCocludeds[i - 1];
     // Check if the goal for the day was not completed
     if (!element.completedGoal) {
         // If this is the latest entry, reset the count to 0
-        if(i === listTimesCocludeds.length) {
+        if (i === listTimesCocludeds.length) {
             daysConcludeds = 0
         }
         i = 0
     } else {
         // Increment the count for consecutive days with completed goals
-        daysConcludeds ++;
+        daysConcludeds++;
     }
 }
 // Update the sequenceConcludeds variable and store it in localStorage
@@ -283,7 +318,7 @@ numberSequence.textContent = `${sequenceConcludeds} ${sequenceConcludeds === 1 ?
 function updatePreviousDayTimeText() {
     //check if there is any existing time in the listTimesCocludeds
     if (listTimesCocludeds.length >= 1) {
-        const timeYesterday = listTimesCocludeds[listTimesCocludeds.length -1];
+        const timeYesterday = listTimesCocludeds[listTimesCocludeds.length - 1];
         const timeConcluded = timeYesterday.timeConcluded || 0
         textProgressYesteday.textContent = formatTimeText(timeConcluded)
     }
