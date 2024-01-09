@@ -75,8 +75,11 @@ function createTaskElement(task) {
         btnEdit.classList.add('hidden');
     }
 
+    let isEditing = false;
+
     // Event listeners for edit and check buttons
     btnEdit.onclick = () => {
+        isEditing = true;
         inputEdit.classList.remove('hidden');
         span.style.display = 'none';
         btnCheck.classList.remove('hidden');
@@ -85,6 +88,7 @@ function createTaskElement(task) {
     };
 
     btnCheck.onclick = () => {
+        isEditing = true    ;
         changeDescription();
     };
 
@@ -96,11 +100,18 @@ function createTaskElement(task) {
         }
     });
 
+    let isDeleting = false;
+
     btnDelete.onclick = () => {
+        isDeleting = true;
+        li.classList.add('disabled')
         li.remove();
         taskList = taskList.filter(taskItem => taskItem !== task);
         updateTasksStorage();
-        textTaskProgress.textContent = textDefault;
+        if(taskSelected == task) {
+            taskSelected = null;
+            textTaskProgress.textContent = textDefault;
+        }
     }
 
     // Function to handle changes in task description
@@ -117,7 +128,9 @@ function createTaskElement(task) {
 
     // Event listener for selecting a task
     li.addEventListener('click', () => {
-        if (span.style.display === 'none') {
+        if (isDeleting || isEditing) {
+            isDeleting = false;
+            isEditing = false;
             return;
         }
 

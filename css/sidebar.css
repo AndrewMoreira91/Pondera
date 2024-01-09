@@ -16,10 +16,9 @@
     -moz-transition: all 0.3s ease-in-out;
     transition: all 0.3s ease-in-out;
 
-    background: rgba(11, 1, 24, 0.81);
+    background: rgba(0, 0, 0, 0.24);
     box-shadow: 7px 8px 18.8px 0px rgba(0, 0, 0, 0.61);
     border-radius: 8px 0px 0px 8px;
-    border: 1px solid #FF9143;
 }
 
 .sidebar-config-header {
