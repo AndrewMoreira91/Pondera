@@ -9,7 +9,7 @@ btnCloseSidebar.addEventListener('click', () => {
 })
 
 inputTimeFocus.addEventListener('change', () => {
-    timeFocus = convertFormattedTimeToSeconds(inputTimeFocus.value)
+    timeFocus = inputTimeFocus.value * 60
     timeInSeconds = checkContext() ? timeFocus : timeRest
     updateConfig()
     updateLocalStorage('Time-focus', timeFocus)

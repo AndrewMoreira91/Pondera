@@ -39,7 +39,7 @@ const audioPlay = new Audio('./sounds/play.mp3');
 const audioPause = new Audio('./sounds/pause.wav');
 audioAlert.volume = 0.6;
 audioPlay.volume = 0.3;
-audioPause.volume = 0.2;
+audioPause.volume = 0.05;
 
 // Initial Settings
 let timeFocus = JSON.parse(localStorage.getItem('Time-focus')) || 1500;
