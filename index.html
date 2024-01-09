@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/sidebar.css">
 
     <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -16,6 +17,8 @@
     <script src="./js/script.js" defer></script>
     <script src="./js/create-task.js" defer></script>
     <script src="./js/notification.js" defer></script>
+    <script src="./js/sidebar.js" defer></script>
+
 </head>
 
 <body>
@@ -37,8 +40,12 @@
                         </ul>
                     </div>
                     <div class="menu-dropdown">
-                        <div class="app--header-img-user">
-                            <img src="./images/Male.jpg" alt="">
+                        <div class="app--header-user">
+                            <div class="app--header-user-text-conteiner">
+                                <h3>Andrew</h3>
+                                <span>Acesse seu perfil</span>
+                            </div>
+                            <img src="./images/user.png" alt="">
                         </div>
                         <ul class="ul-dropdown">
                             <li><a href="#">Perfil</a></li>
@@ -127,6 +134,67 @@
                 </div>
             </section>
         </div>
+
+        <section class="sidebar-config sidebar-disabled">
+
+            <div class="sidebar-config-container">
+                <div class="sidebar-config-header">
+                    <h3 class="sidebar-config-title">Configurações</h3>
+                    <button class="btn-close-config">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="close">
+                                <g id="close_2">
+                                    <mask id="mask0_174_347" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="1"
+                                        y="1" width="13" height="13">
+                                        <rect id="Bounding box" x="1.40625" y="1.40625" width="12.1875" height="12.1875"
+                                            fill="#D9D9D9" />
+                                    </mask>
+                                    <g mask="url(#mask0_174_347)">
+                                        <path id="close_3"
+                                            d="M3.4375 12.5781L2.42188 11.5625L6.48437 7.5L2.42188 3.4375L3.4375 2.42188L7.5 6.48437L11.5625 2.42188L12.5781 3.4375L8.51563 7.5L12.5781 11.5625L11.5625 12.5781L7.5 8.51563L3.4375 12.5781Z"
+                                            fill="white" />
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </button>
+                </div>
+                <div class="sidebar-config-body">
+                    <div class="sidebar-config-item">
+                        <h4 class="sidebar-config-item-title">Tempo de consentração</h4>
+                        <div class="sidebar-config-item-content">
+                            <div class="sidebar-config-item-content-input">
+                                <input id="input-time-focus" type="time" value="00:30">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-config-item">
+                        <h4 class="sidebar-config-item-title">Tempo de descanso</h4>
+                        <div class="sidebar-config-item-content">
+                            <div class="sidebar-config-item-content-input">
+                                <input id="input-time-rest" type="time" value="00:30">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-config-item">
+                        <h4 class="sidebar-config-item-title">Meta diária</h4>
+                        <div class="sidebar-config-item-content">
+                            <div class="sidebar-config-item-content-input">
+                                <input id="input-target-time" type="time" value="00:30">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sidebar-config-item">
+                        <h4 class="sidebar-config-item-title">Notificações</h4>
+                        <div class="sidebar-config-item-content">
+                            <div class="sidebar-config-item-content-input">
+                                <input id="input-notifications" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+
+        </section>
 
     </main>
 

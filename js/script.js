@@ -20,6 +20,7 @@ const taskListConteiner = document.querySelector('.app--card-list-conteiner')
 const menuDropdown = document.querySelector('.menu-dropdown')
 const ulDropdown = document.querySelector('.ul-dropdown')
 const btnOpenConfig = document.querySelector('.btn-open-config')
+const sideBarConfig = document.querySelector('.sidebar-config')
 
 menuDropdown.addEventListener('click', () => {
     if (ulDropdown.style.opacity === '1') {
@@ -41,8 +42,8 @@ audioPlay.volume = 0.3;
 audioPause.volume = 0.2;
 
 // Initial Settings
-let timeFocus = 1500;
-let timeRest = 300;
+let timeFocus = JSON.parse(localStorage.getItem('Time-focus')) || 1500;
+let timeRest = JSON.parse(localStorage.getItem('Time-rest')) || 300;
 let targetDailyTime = JSON.parse(localStorage.getItem('Target-time')) || 0;
 let timeConcluded = JSON.parse(localStorage.getItem('Time-concluded')) || 0;
 let listTimesCocludeds = JSON.parse(localStorage.getItem('List-time-concluded')) || [];
@@ -54,11 +55,14 @@ let timeInSeconds = timeFocus
 
 let completedGoal = false;  // 
 
-// Calculate the speed of progress based on the target daily time
-let speed = 1 / (targetDailyTime / 100);
-// Calculate the initial progress based on the speed and time already concluded
-// The progress represents the completion percentage towards the daily goal
-let progress = speed * timeConcluded;
+let progress = 0; // Progress bar percentage
+let speed = 0; // Speed of progress bar
+
+function calculatedProgress() {
+    speed = 1 / (targetDailyTime / 100);
+    return progress = speed * timeConcluded, speed;
+}
+calculatedProgress()
 
 let dateToday = new Date();
 dateToday = dateToday.toLocaleDateString(); // Get today's date
@@ -70,7 +74,7 @@ const openModal = () => [fadeModal, modalChoseTimer].forEach(element => element.
 // Check if there s a target daily time set, if not, show the modal.
 !targetDailyTime ? openModal() : false
 
-btnOpenConfig.addEventListener('click', openModal)
+btnOpenConfig.addEventListener('click', () => sideBarConfig.classList.remove('sidebar-disabled'))
 
 // Event listeners
 btnPlayPause.addEventListener('click', start);

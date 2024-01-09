@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.sidebar-config {
+    position: absolute;
+    right: 0;
+    width: 250px;
+    height: 90vh;
+    z-index: 100;
+    padding: 16px;
+    overflow: hidden;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+
+    background: rgba(11, 1, 24, 0.81);
+    box-shadow: 7px 8px 18.8px 0px rgba(0, 0, 0, 0.61);
+    border-radius: 8px 0px 0px 8px;
+    border: 1px solid #FF9143;
+}
+
+.sidebar-config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.sidebar-config-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.btn-close-config {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.btn-close-config svg {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-close-config:hover {
+    transition: all 0.3s;
+    background-color: #FF9143;
+}
+
+.sidebar-config-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    gap: 16px;
+}
+
+.sidebar-config-item {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+    align-items: center;
+    gap: 24px;
+}
+
+.sidebar-config-item-title {
+    font-size: 1rem;
+    font-weight: 600;
+    width: 50%;
+}
+
+.sidebar-config-item-content {
+    width: 40%;
+    background-color: #FF9143;
+    padding: 4px 6px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Crie todo o estilo da sidebar */
+.sidebar-config-item-content input {
+    display: flex;
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #FF9143;
+    background-color: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+.sidebar-config-item-content input:focus {
+    outline: none;
+}
+
+.sidebar-config-item-content input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.sidebar-disabled {
+    right: -250px;
+    pointer-events: none;
+}
