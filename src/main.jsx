@@ -13,16 +13,16 @@ import { queryClient } from './services/queyClient.js'
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/Pondera/',
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: '/',
+        path: '/Pondera/',
         element: <Dashboard />
       },
       {
-        path: '/pomodoro',
+        path: '/Pondera/pomodoro/',
         element: <Pomodoro />
       }
     ]
