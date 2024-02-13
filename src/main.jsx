@@ -4,25 +4,26 @@ import './index.css'
 
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import { QueryClientProvider } from 'react-query'
-
-import Dashboard from './routes/Dashboard.jsx'
-import Pomodoro from './routes/Pomodoro.jsx'
-import App from './App.jsx'
-import ErrorPage from './routes/Erro-page.jsx'
 import { queryClient } from './services/queyClient.js'
+
+import Dashboard from './routes/pages/DashBoard/Dashboard.jsx'
+import Pomodoro from './routes/pages/Pomodoro/Pomodoro.jsx'
+import App from './App.jsx'
+
+import ErrorPage from './routes/Erro-page.jsx'
 
 const router = createBrowserRouter([
   {
-    path: '/Pondera/',
+    path: '/',
     element: <App />,
     errorElement: <ErrorPage />,
     children: [
       {
-        path: '/Pondera/',
+        path: '/',
         element: <Dashboard />
       },
       {
-        path: '/Pondera/pomodoro/',
+        path: '/pomodoro',
         element: <Pomodoro />
       }
     ]

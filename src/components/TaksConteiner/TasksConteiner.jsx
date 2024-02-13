@@ -45,10 +45,10 @@ const TaskConteier = (props) => {
 						})}
 					</div>
 				</div>
-			</div>
-			<div className='conteiner-buttons-footer-tasks'>
-				<button onClick={toClearAllTasksDone} className='button-footer-clear-tasks clear-all-tasks-concluded'>Apagar todas as tarefas concluídas</button>
-				<button onClick={toClearAllTasks} className='button-footer-clear-tasks clear-all-tasks'>Apagar todas as tarefas</button>
+				<div className='conteiner-buttons-footer-tasks'>
+					<button onClick={toClearAllTasksDone} className='button-footer-clear-tasks clear-all-tasks-concluded'>Apagar todas as tarefas concluídas</button>
+					<button onClick={toClearAllTasks} className='button-footer-clear-tasks clear-all-tasks'>Apagar todas as tarefas</button>
+				</div>
 			</div>
 		</div>
 	);

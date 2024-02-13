@@ -1,11 +1,8 @@
 .pomodoro-conteiner {
-    width: 70%;
-    gap: 3rem;
-
-    margin: 48px auto;
-
     display: flex;
-    align-items: center;
+    width: 70%;
+    margin: 48px auto;
+    gap: 3rem;
 }
 
 .conteiner-background {

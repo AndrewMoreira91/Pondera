@@ -1,20 +1,20 @@
 import './Pomodoro.css'
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import secondsToTime from '../utils/secondsToTime';
+import secondsToTime from '../../../utils/secondsToTime';
 
-import Timer from '../components/Timer/Timer';
-import Button from '../components/Button/Button';
+import Timer from '../../../components/Timer/Timer';
+import Button from '../../../components/Button/Button';
 
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
-import TaskConteier from '../components/TaksConteiner/TasksConteiner';
+import TaskConteier from '../../../components/TaksConteiner/TasksConteiner';
 import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa";
 import { LuTimerReset } from "react-icons/lu";
-import ProgressBar from '../components/ProgressBar/ProgressBar';
-import instance from '../services/axios';
+import ProgressBar from '../../../components/ProgressBar/ProgressBar';
+import instance from '../../../services/axios';
 
-const TIME_IN_SECONDS_DEFAULT = 10;
+const TIME_IN_SECONDS_DEFAULT = 1 * 60 * 25;
 let timerInterval = null;
 
 function Pomodoro() {
