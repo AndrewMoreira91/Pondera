@@ -1,0 +1,35 @@
+.input-component-conteiner {
+		display: flex;
+		align-items: center;
+		align-self: stretch;
+
+		background-color: #fff;
+		border-radius: 8px;
+		overflow: hidden;
+		padding: 8px 12px;
+}
+
+.input-component-conteiner input {
+	border: none;
+	width: 100%;
+	font-size: 1rem;
+	color: #272727;
+}
+
+.input-component-conteiner input:focus {
+	outline: none;
+}
+
+.button-new-task-icon {
+	color: #888888;
+
+	cursor: pointer;
+	font-size: 24px;
+}
+
+.button-new-task-icon:hover {
+	background-color: #e1e1e1;
+	border-radius: 50%;
+	color: #000000;
+	transition: 0.3s;
+}

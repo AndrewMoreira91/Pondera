@@ -1,0 +1,51 @@
+:root {
+  --LIner-gradiente-roxo: linear-gradient(90deg, #080216 -0.49%, #10013A 24.06%, #2A1655 76.81%);
+  --g01: #F7F7F7;
+  --g02: #EDEDED;
+  --g03: #DEDEDE;
+  --g08: #FFF;
+  --mimolette-orange: #E88A1A;
+  --orange-hover: #f89a28;
+  --background: rgba(0, 0, 0, 0.24);
+  --HeadLine-1: #ECECEC;
+
+  background-color: #242424;
+  color: var(--g02, #EDEDED);
+  background: var(--LIner-gradiente-roxo, linear-gradient(90deg, #080216 -0.49%, #10013A 24.06%, #2A1655 76.81%));
+
+  font-family: "Roboto";
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+li {
+  list-style: none;
+}
+
+button {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  cursor: pointer;
+}

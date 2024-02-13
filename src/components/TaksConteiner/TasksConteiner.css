@@ -1,0 +1,99 @@
+.tasks-conteiner {
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	overflow: hidden;
+}
+
+.label-task-in-progress {
+	color: var(--g08, #FFF);
+	text-align: center;
+	font-size: 160px;
+}
+
+.title-task-in-progress {
+	margin-top: 4px;
+	overflow: hidden;
+	color: var(--g08, #FFF);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-family: Syne;
+	font-size: 24px;
+	font-weight: 400;
+	line-height: 85%;
+}
+
+.label-new-task {
+	color: var(--g08, #FFF);
+	font-size: 16px;
+	font-weight: 300;
+}
+
+.content-tasks {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	justify-content: space-between;
+	gap: 0.1rem;
+	overflow-y: scroll;
+}
+
+.content-tasks::-webkit-scrollbar {
+	width: 5px;
+}
+
+.content-tasks::-webkit-scrollbar-thumb {
+	background-color: var(--mimolette-orange);
+	border-radius: 10px;
+}
+
+.taskslist-label-conteiner {
+	width: 100%;
+}
+
+.tasks-list-conteiner {
+	display: flex;
+	margin-top: 6px;
+	flex-direction: column;
+	gap: 0.6rem;
+	width: 100%;
+}
+
+.conteiner-buttons-footer-tasks {
+	display: flex;
+	justify-content: center;
+	gap: 24px;
+}
+
+.button-footer-clear-tasks {
+	display: flex;
+	padding: 6px var(--semi-regular-space, 8px);
+	justify-content: center;
+	align-items: center;
+	color: var(--g01, #F7F7F7);
+	font-size: 0.8rem;
+	border-radius: 12px;
+	transition: 0.3s;
+	letter-spacing: 2px;
+	line-height: 110%;
+}
+
+.clear-all-tasks {
+	background: rgba(162, 162, 162, 0.11);
+}
+
+.clear-all-tasks:hover {
+	background: var(--background, rgba(0, 0, 0, 0.24));
+}
+
+.clear-all-tasks-concluded {
+
+	border: 1px solid var(--mimolette-orange);
+}
+
+.clear-all-tasks-concluded:hover {
+	background: var(--mimolette-orange);;
+}

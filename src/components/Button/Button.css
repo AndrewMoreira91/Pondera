@@ -1,0 +1,16 @@
+.button-component {
+    padding: 1.5rem 2rem;
+    border-radius: 1.5rem;
+    background: rgba(146, 146, 146, 0.15);
+    color: var(--g02, #EDEDED);
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+    opacity: .8;
+}
+
+.button-component:hover {
+    transition: 0.3s;
+    opacity: 1;
+}
