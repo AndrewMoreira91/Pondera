@@ -1,7 +1,7 @@
 import './Pomodoro.css'
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import secondsToTime from '../../../utils/secondsToTime';
+import convertSecondsToFormattedTime from '../../../utils/formattedTime';
 
 import Timer from '../../../components/Timer/Timer';
 import Button from '../../../components/Button/Button';
@@ -18,42 +18,55 @@ const TIME_IN_SECONDS_DEFAULT = 1 * 60 * 25;
 let timerInterval = null;
 
 function Pomodoro() {
-
   const queryClient = useQueryClient();
 
   const [timeInSeconds, setTimeInSeconds] = useState(TIME_IN_SECONDS_DEFAULT);
-  const [isBtnPause, setIsBtnPause] = useState(false);
+  const [timeCompleted, setTimeCompleted] = useState(0);
+  const [isPaused, setIsPaused] = useState(true);
 
   const countDown = () => {
     setTimeInSeconds((prevTimeInSeconds) => {
       if (prevTimeInSeconds === 0) {
         clearInterval(timerInterval);
         timerInterval = null;
-        setIsBtnPause(false);
+        setIsPaused(false);
         return TIME_IN_SECONDS_DEFAULT;
       }
-
       return prevTimeInSeconds - 1;
     });
+    setTimeCompleted((prevTimeCompleted) => {
+      return prevTimeCompleted + 1
+    });
   }
-
+  console.log('timeCompleted:', timeCompleted);
+  
   const startTimer = () => {
-    console.log('start');
     if (timerInterval) {
+      console.log('Pause timer');
       clearInterval(timerInterval);
       timerInterval = null;
-      setIsBtnPause(false);
+      setIsPaused(true);
       return;
     }
-    setIsBtnPause(true);
+    console.log('Start timer');
+    setIsPaused(false);
     timerInterval = setInterval(countDown, 1000);
   }
 
-  const time = '1 hora e 30 minutos';
-  const textSequence = 6
-  const timeYesterday = '1 hora e 30 minutos'
-
   // Requisiçoes com a API
+ useQuery('users', async () => {
+    const res = await instance.get('/users/1')
+    return res.data
+  }, {
+    staleTime: 1000 * 60 // 1 minute
+  })
+
+  const user = queryClient.getQueryData('users')
+  const [dailyTimeGoal, setDailyTimeGoal] = useState(0)
+  if (user && dailyTimeGoal === 0) {
+    setDailyTimeGoal(user.daily_time_goal)
+  }
+
   useQuery('tasks', async () => {
     const res = await instance.get('/tasks')
     return res.data
@@ -62,7 +75,6 @@ function Pomodoro() {
   })
 
   const previousTasks = queryClient.getQueryData('tasks')
-
   const [idNewTask, setIdNewTask] = useState(0)
 
   const mutationPost = useMutation(newTask => instance.post('/tasks', newTask))
@@ -82,7 +94,7 @@ function Pomodoro() {
   function deleteTask(taskId) {
     console.log('task deletada: ', taskId)
     mutationDelete.mutateAsync(taskId)
-    if(mutationDelete.isError) {
+    if (mutationDelete.isError) {
       return console.log('erro ao deletar task\n ID da tasks à ser deletada:', taskId)
     }
 
@@ -94,22 +106,22 @@ function Pomodoro() {
   return (
     <div className="pomodoro-conteiner">
       <div className="timer-conteiner conteiner-background">
-        <Timer timerFormated={secondsToTime(timeInSeconds)} />
+        <Timer minutesAndSecondsFormated={convertSecondsToFormattedTime(timeInSeconds)} />
         <div className="controls-buttons">
           <Button > <LuTimerReset /> </Button>
-          <Button onClick={startTimer} > {isBtnPause ? <FaPause /> : <FaPlay />} </Button>
+          <Button onClick={startTimer} > {isPaused ? <FaPlay /> : <FaPause />} </Button>
           <Button > <TbPlayerTrackNextFilled /> </Button>
         </div>
       </div>
       <div className="conteiner-info-session">
         <div className='daily-progress-conteiner conteiner-background'>
           <h2>Andamento diário</h2>
-          <ProgressBar progress={34} />
-          <span>Concluído: {time}</span>
+          <ProgressBar timeCompleted={timeCompleted} dailyTimeGoal={dailyTimeGoal} />
+          <span>Concluído: {convertSecondsToFormattedTime(timeCompleted).hourAndMinutes}</span>
         </div>
         <div className='conteiner-background sequence-conteiner'>
-          <h2>Sequência de {textSequence} dias</h2>
-          <span>Ontem você teve um tempo de {timeYesterday}</span>
+          <h2>Sequência de 71 dias</h2>
+          <span>Ontem você teve um tempo de </span>
         </div>
 
         <TaskConteier

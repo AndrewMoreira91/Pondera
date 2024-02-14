@@ -1,6 +1,9 @@
 import './ProgressBar.css'
 
-const ProgressBar = ({ progress }) => {
+const ProgressBar = ({ timeCompleted, dailyTimeGoal }) => {
+
+	const increment = 1 / (dailyTimeGoal / 100)
+	const progress = increment * timeCompleted
 
 	return (
 		<div className="progress-bar">

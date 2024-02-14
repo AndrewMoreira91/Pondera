@@ -14,5 +14,5 @@
 	background-color: #FFA500;
 	width: 0;
 	border-radius: 20px;
-	transition: width 0.5s;
+	transition: width 0.3s ease-in;
 }
