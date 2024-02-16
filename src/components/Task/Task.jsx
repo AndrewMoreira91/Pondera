@@ -5,7 +5,7 @@ import { MdDeleteForever } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { useState } from 'react';
 import { useQueryClient } from 'react-query';
-import instance from '../../services/axios';
+import api from '../../services/axios';
 
 const Task = (props) => {
 	const [isEditing, setIsEditing] = useState(false)
@@ -16,7 +16,7 @@ const Task = (props) => {
 	
 	function toEditTask() {
 		setIsEditing(false)
-		instance.put('/tasks/' + props.task.id, {
+		api.put('/tasks/' + props.task.id, {
 			description: valueDescription,
 			isDone: 0
 		})

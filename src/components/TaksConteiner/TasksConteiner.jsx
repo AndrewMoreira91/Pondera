@@ -3,14 +3,14 @@ import { useQueryClient } from 'react-query';
 import Input from '../Input/Input';
 import Task from '../Task/Task';
 import './TasksConteiner.css';
-import instance from '../../services/axios';
+import api from '../../services/axios';
 
 const TaskConteier = (props) => {
 
 	const queryClient = useQueryClient()
 
 	function toClearAllTasks() {
-		instance.delete('/tasks')
+		api.delete('/tasks')
 		queryClient.setQueryData('tasks', [])
 	}
 

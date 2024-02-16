@@ -14,7 +14,7 @@ const convertSecondsToFormattedTime = (timeInSeconds) => {
 	const textMinuteFormated = minutes === 1 ? 'minuto' : 'minutos';
 
 	const hourAndMinutes = `${textHourFormated()} ${minutes} ${textMinuteFormated}`;
-	const minuteAndSeconds = `${minutes } ${textHourFormated} e ${seconds} ${seconds === 1 ? 'segundo' : 'segundos'}`;
+	const minuteAndSeconds = `${minutes } ${textHourFormated()} ${textMinuteFormated} e ${seconds} ${seconds === 1 ? 'segundo' : 'segundos'}`;
 	
 	return { minuteAndSeconds, hourAndMinutes, minutes, seconds};
 }

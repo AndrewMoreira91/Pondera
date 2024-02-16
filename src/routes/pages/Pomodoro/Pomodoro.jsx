@@ -1,28 +1,36 @@
 import './Pomodoro.css'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import api from '../../../services/axios';
 import convertSecondsToFormattedTime from '../../../utils/formattedTime';
 
 import Timer from '../../../components/Timer/Timer';
 import Button from '../../../components/Button/Button';
-
-import { TbPlayerTrackNextFilled } from "react-icons/tb";
 import TaskConteier from '../../../components/TaksConteiner/TasksConteiner';
+import ProgressBar from '../../../components/ProgressBar/ProgressBar';
+
 import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa";
 import { LuTimerReset } from "react-icons/lu";
-import ProgressBar from '../../../components/ProgressBar/ProgressBar';
-import instance from '../../../services/axios';
+import { TbPlayerTrackNextFilled } from "react-icons/tb";
 
 const TIME_IN_SECONDS_DEFAULT = 1 * 60 * 25;
 let timerInterval = null;
+let intervalPost = null;
 
 function Pomodoro() {
   const queryClient = useQueryClient();
 
   const [timeInSeconds, setTimeInSeconds] = useState(TIME_IN_SECONDS_DEFAULT);
-  const [timeCompleted, setTimeCompleted] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
+  const [timeCompleted, setTimeCompleted] = useState(JSON.parse(localStorage.getItem('timeCompleted')) || 0);
+
+  useQuery('dailyLogs', async () => {
+    const res = await api.get('/dailyLogs/last/1')
+    return res.data
+  }, {
+    staleTime: 1000 * 60 * 5 // 5 minutes
+  })
 
   const countDown = () => {
     setTimeInSeconds((prevTimeInSeconds) => {
@@ -38,8 +46,19 @@ function Pomodoro() {
       return prevTimeCompleted + 1
     });
   }
-  console.log('timeCompleted:', timeCompleted);
-  
+  localStorage.setItem('timeCompleted', JSON.stringify(timeCompleted))
+
+  useEffect(() => {
+    function updateTimeCompletedInDB() {
+      if (intervalPost) {
+        clearInterval(intervalPost);
+      }
+      const timeCompletedInLocalStorage = JSON.parse(localStorage.getItem('timeCompleted'))
+      api.put('/dailyLogs/updateTime/1', { timeCompleted: timeCompletedInLocalStorage })
+    }
+    intervalPost = setInterval(updateTimeCompletedInDB, 1000 * 60) // 1 minute
+  }, [])
+
   const startTimer = () => {
     if (timerInterval) {
       console.log('Pause timer');
@@ -54,8 +73,8 @@ function Pomodoro() {
   }
 
   // Requisiçoes com a API
- useQuery('users', async () => {
-    const res = await instance.get('/users/1')
+  useQuery('users', async () => {
+    const res = await api.get('/users/1')
     return res.data
   }, {
     staleTime: 1000 * 60 // 1 minute
@@ -68,29 +87,28 @@ function Pomodoro() {
   }
 
   useQuery('tasks', async () => {
-    const res = await instance.get('/tasks')
+    const res = await api.get('/tasks')
     return res.data
   }, {
     staleTime: 1000 * 60 // 1 minute 
   })
 
-  const previousTasks = queryClient.getQueryData('tasks')
+  const previousTasksList = queryClient.getQueryData('tasks')
   const [idNewTask, setIdNewTask] = useState(0)
 
-  const mutationPost = useMutation(newTask => instance.post('/tasks', newTask))
+  const mutationPost = useMutation(newTask => api.post('/tasks', newTask))
   function createTask(taskDescription) {
     if (!taskDescription) return
     mutationPost.mutateAsync({ description: taskDescription })
       .then(response => {
         setIdNewTask(response.data.insertId)
       })
-
     queryClient.setQueryData('tasks', () => {
-      return [...previousTasks, { id: idNewTask, description: taskDescription }]
+      return [...previousTasksList, { id: idNewTask, description: taskDescription }]
     })
   }
 
-  const mutationDelete = useMutation(id => instance.delete('/tasks/' + id))
+  const mutationDelete = useMutation(id => api.delete('/tasks/' + id))
   function deleteTask(taskId) {
     console.log('task deletada: ', taskId)
     mutationDelete.mutateAsync(taskId)
@@ -99,7 +117,7 @@ function Pomodoro() {
     }
 
     queryClient.setQueryData('tasks', () => {
-      return previousTasks.filter(task => task.id !== taskId)
+      return previousTasksList.filter(task => task.id !== taskId)
     })
   }
 
@@ -109,7 +127,7 @@ function Pomodoro() {
         <Timer minutesAndSecondsFormated={convertSecondsToFormattedTime(timeInSeconds)} />
         <div className="controls-buttons">
           <Button > <LuTimerReset /> </Button>
-          <Button onClick={startTimer} > {isPaused ? <FaPlay /> : <FaPause />} </Button>
+          <Button backgroundColor={'#E88A1A'} onClick={startTimer} > {isPaused ? <FaPlay /> : <FaPause />} </Button>
           <Button > <TbPlayerTrackNextFilled /> </Button>
         </div>
       </div>
@@ -125,7 +143,7 @@ function Pomodoro() {
         </div>
 
         <TaskConteier
-          taskList={previousTasks}
+          taskList={previousTasksList}
           toDeleteTask={(taskId) => deleteTask(taskId)}
           toCreateTask={(taskDescription) => createTask(taskDescription)}
         />
