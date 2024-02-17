@@ -1,0 +1,16 @@
+.days-checks-item span {
+	color: var(--Giants-orange, #F85A16);
+	font-size: 1.25rem;
+	font-weight: 600;
+	line-height: 150%;
+}
+
+.circle-days-check {
+	display: flex;
+	width: 1.9rem;
+	height: 1.9rem;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	background-color: var(--g03);
+}

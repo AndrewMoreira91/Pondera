@@ -1,5 +1,10 @@
 .main-dashboard-conteiner {
+	display: flex;
+	flex-direction: column;
 	margin: 48px;
+}
+
+.hero-header-conteiner {
 	display: flex;
 	align-items: center;
 	gap: 4rem;
@@ -38,6 +43,8 @@
 
 .info-user-conteiner {
 	width: 55%;
+	max-height: 550px;
+
 	display: flex;
 	padding: 3rem;
 	flex-direction: column;
@@ -46,6 +53,7 @@
 	border-radius: 1.5rem;
 	background: rgba(0, 0, 0, 0.13);
 	box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.03), 0px 12px 16px -4px rgba(0, 0, 0, 0.08);
+
 }
 
 .info-user-conteiner h4 {
@@ -59,6 +67,11 @@
 	color: var(--g05, #B3B3B3);
 	line-height: 150%;
 	font-size: 1.1rem;
+}
+
+.circles-days-checks {
+	display: flex;
+	gap: 1rem;
 }
 
 .days-concluds {
@@ -114,13 +127,23 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
+	overflow-y: scroll;
 }
 
-.list-tasks-in-schedule ul li {
-	padding: 0.3rem;
-	background: var(--bg-black-trans-17, rgba(0, 0, 0, 0.17));
-	color: var(--g05, #B3B3B3);
-	padding: 4px;
+.list-tasks-in-schedule::-webkit-scrollbar {
+	width: 6px;
+}
 
-	line-height: 150%;
+.list-tasks-in-schedule::-webkit-scrollbar-thumb {
+	background-color: #F85A16;
+	border-radius: 4px;
+}
+
+.in-contruction {
+	display: flex;
+	margin-top: 100px;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
 }

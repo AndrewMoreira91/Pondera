@@ -13,18 +13,18 @@ const Task = (props) => {
 	const [valueDescription, setValueDescription] = useState(props.task.description)
 	const queryClient = useQueryClient()
 
-	
+
 	function toEditTask() {
 		setIsEditing(false)
 		api.put('/tasks/' + props.task.id, {
 			description: valueDescription,
 			isDone: 0
 		})
-		
+
 		const previousTasks = queryClient.getQueryData('tasks')
 		const newTasksList = previousTasks.map(task => {
-			if(task.id === props.task.id) {
-				return {...task, description: valueDescription}
+			if (task.id === props.task.id) {
+				return { ...task, description: valueDescription }
 			}
 			return task
 		})
@@ -32,8 +32,23 @@ const Task = (props) => {
 		queryClient.setQueryData('tasks', newTasksList)
 	}
 
+	const [borderColor, setBorderColor] = useState(null)
+
+	function toClickInTask() {
+		props.toClickInTask()
+		if (!borderColor) {
+			setBorderColor({
+				border: "1px",
+				borderColor: "#E88A1A",
+				borderStyle: "solid"
+			})
+		} else {
+			setBorderColor(null)
+		}
+	}
+
 	return (
-		<div className='task-component-conteiner'>
+		<div onClick={toClickInTask} className='task-component-conteiner' style={borderColor} >
 			{isEditing ?
 				<>
 					<input value={valueDescription} onChange={e => setValueDescription(e.target.value)} className='input-edit-task' />

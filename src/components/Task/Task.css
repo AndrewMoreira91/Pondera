@@ -9,6 +9,11 @@
 	background: rgba(255, 255, 255, 0.05);
 }
 
+.task-component-conteiner:hover {
+	background: rgba(255, 255, 255, 0.1);
+	transition: 0.3s;
+}
+
 .task-component-conteiner span {
 	color: #C5C5C5;
 	font-family: "Roboto Flex";

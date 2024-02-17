@@ -4,8 +4,11 @@ import Input from '../Input/Input';
 import Task from '../Task/Task';
 import './TasksConteiner.css';
 import api from '../../services/axios';
+import { useState } from 'react';
 
 const TaskConteier = (props) => {
+
+  const [taskInProgress, setTaskInProgress] = useState('Nenhuma tarefa em andamento')
 
 	const queryClient = useQueryClient()
 
@@ -23,11 +26,15 @@ const TaskConteier = (props) => {
 		})
 	}
 
+	function toClickInTask(task) {
+		setTaskInProgress(task.description)
+	}
+
 	return (
 		<div className='tasks-conteiner conteiner-background'>
 			<div>
-				<span className='label-task-in-progress'>#Tarefa em andamento</span>
-				<h3 className='title-task-in-progress'>Estudar react</h3>
+				<span className='label-task-in-progress'>Tarefa em andamento:</span>
+				<h3 className='title-task-in-progress'># {taskInProgress}</h3>
 			</div>
 			<h4 className='label-new-task'>Crie uma nova tarefa</h4>
 			<Input toCreateTask={taskDescription => props.toCreateTask(taskDescription)} />
@@ -41,6 +48,7 @@ const TaskConteier = (props) => {
 								key={index}
 								task={task}
 								toDeleteTask={taskId => props.toDeleteTask(taskId)}
+								toClickInTask={() => toClickInTask(task)}
 							/>
 						})}
 					</div>
