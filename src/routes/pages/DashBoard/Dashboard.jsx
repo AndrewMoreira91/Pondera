@@ -9,7 +9,8 @@ import CircleDayCheck from '../../../components/CircleDayCheck/CircleDayCheck';
 function Dashboard() {
 
   const timeCompleted = JSON.parse(localStorage.getItem('timeCompleted')) || 0
-  const dailyTimeGoal = 1500
+  const dailyTimeGoal = 5400
+  console.log(timeCompleted)
 
   const date = new Date()
   const daysWeekNames = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
@@ -30,7 +31,10 @@ function Dashboard() {
           <div className='progress-conteiner'>
             <ProgressBar timeCompleted={timeCompleted} dailyTimeGoal={dailyTimeGoal} />
             <span className="text-call-to-action">
-              Falta só {convertSecondsToFormattedTime(dailyTimeGoal - timeCompleted).hourAndMinutes} para concluir sua meta diária, não desiste agora
+              {timeCompleted >= dailyTimeGoal ?
+                "Parabéns, você bateu sua meta diária!. Continue assim!"
+                :
+                `Falta só ${convertSecondsToFormattedTime(dailyTimeGoal - timeCompleted).hourAndMinutes} para concluir sua meta diária, não desiste agora`}
             </span>
           </div>
           <Link to="/pomodoro" >

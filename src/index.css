@@ -16,6 +16,7 @@
   background: var(--LIner-gradiente-roxo, linear-gradient(90deg, #080216 -0.49%, #10013A 24.06%, #2A1655 76.81%));
 
   font-family: "Roboto";
+  font-size: 16px;
 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

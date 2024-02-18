@@ -3,11 +3,14 @@ import './ProgressBar.css'
 const ProgressBar = ({ timeCompleted, dailyTimeGoal }) => {
 
 	const increment = 1 / (dailyTimeGoal / 100)
-	const progress = increment * timeCompleted
+	let progress = increment * timeCompleted
+	progress = progress > 100 ? 100 : progress
 
 	return (
 		<div className="progress-bar">
-			<div className="progress-bar__progress" style={{ width: `${progress}%` }} />
+			<div className="progress-bar__progress" style={{ width: `${progress}%` }}>
+			</div>
+			<span className="progress-bar__text" style={{ width: `${progress}%` }}>{Math.round(progress)}%</span>
 		</div>
 	)
 }

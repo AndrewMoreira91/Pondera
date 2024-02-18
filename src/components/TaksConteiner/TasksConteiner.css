@@ -14,15 +14,12 @@
 }
 
 .title-task-in-progress {
-	margin-top: 4px;
 	overflow: hidden;
 	color: var(--g08, #FFF);
-	text-overflow: ellipsis;
-	white-space: nowrap;
 	font-family: Syne;
 	font-size: 24px;
-	font-weight: 400;
-	line-height: 85%;
+	font-weight: 600;
+	margin: 8px 0;
 }
 
 .label-new-task {

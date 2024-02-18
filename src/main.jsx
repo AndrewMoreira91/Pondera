@@ -11,6 +11,7 @@ import Pomodoro from './routes/pages/Pomodoro/Pomodoro.jsx'
 import App from './App.jsx'
 
 import ErrorPage from './routes/Erro-page.jsx'
+import { TimerContextProvider } from './context/TimerContext.jsx'
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <TimerContextProvider>
+        <RouterProvider router={router} />
+      </TimerContextProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 )

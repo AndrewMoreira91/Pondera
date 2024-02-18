@@ -16,3 +16,12 @@
 	border-radius: 20px;
 	transition: width 0.3s ease-in;
 }
+
+.progress-bar__text {
+	position: absolute;
+	display: block;
+	text-align: end;
+	color: #414141;
+	font-size: 1rem;
+	font-weight: 400;
+}

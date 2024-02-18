@@ -1,8 +1,9 @@
 import './Pomodoro.css'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import api from '../../../services/axios';
 import convertSecondsToFormattedTime from '../../../utils/formattedTime';
+import { TimerContext } from '../../../context/TimerContext';
 
 import Timer from '../../../components/Timer/Timer';
 import Button from '../../../components/Button/Button';
@@ -14,17 +15,33 @@ import { FaPlay } from "react-icons/fa";
 import { LuTimerReset } from "react-icons/lu";
 import { TbPlayerTrackNextFilled } from "react-icons/tb";
 
-const TIME_IN_SECONDS_DEFAULT = 1 * 60 * 25;
 let timerInterval = null;
 let intervalPost = null;
 
 function Pomodoro() {
-  const queryClient = useQueryClient();
+  const { togleContextTime, timeInSeconds, setTimeInSeconds} = useContext(TimerContext)
 
-  const [timeInSeconds, setTimeInSeconds] = useState(TIME_IN_SECONDS_DEFAULT);
   const [isPaused, setIsPaused] = useState(true);
   const [timeCompleted, setTimeCompleted] = useState(JSON.parse(localStorage.getItem('timeCompleted')) || 0);
 
+	const startAudio = new Audio('/start.mp3');
+	const stopAudio = new Audio('/stop.mp3');
+  
+  const queryClient = useQueryClient();
+
+  useQuery('users', async () => {
+    const res = await api.get('/users/1')
+    return res.data
+  }, {
+    staleTime: 1000 * 60 // 1 minute
+  })
+  const user = queryClient.getQueryData('users')
+
+  const [dailyTimeGoal, setDailyTimeGoal] = useState(0)
+  if (user && dailyTimeGoal === 0) {
+    setDailyTimeGoal(user.daily_time_goal)
+  }
+  
   useQuery('dailyLogs', async () => {
     const res = await api.get('/dailyLogs/last/1')
     return res.data
@@ -37,8 +54,8 @@ function Pomodoro() {
       if (prevTimeInSeconds === 0) {
         clearInterval(timerInterval);
         timerInterval = null;
-        setIsPaused(false);
-        return TIME_IN_SECONDS_DEFAULT;
+        setIsPaused(true);
+        return togleContextTime();
       }
       return prevTimeInSeconds - 1;
     });
@@ -62,28 +79,16 @@ function Pomodoro() {
   const startTimer = () => {
     if (timerInterval) {
       console.log('Pause timer');
+      stopAudio.play();
       clearInterval(timerInterval);
       timerInterval = null;
       setIsPaused(true);
       return;
     }
     console.log('Start timer');
+    startAudio.play();
     setIsPaused(false);
     timerInterval = setInterval(countDown, 1000);
-  }
-
-  // Requisiçoes com a API
-  useQuery('users', async () => {
-    const res = await api.get('/users/1')
-    return res.data
-  }, {
-    staleTime: 1000 * 60 // 1 minute
-  })
-
-  const user = queryClient.getQueryData('users')
-  const [dailyTimeGoal, setDailyTimeGoal] = useState(0)
-  if (user && dailyTimeGoal === 0) {
-    setDailyTimeGoal(user.daily_time_goal)
   }
 
   useQuery('tasks', async () => {
@@ -92,7 +97,6 @@ function Pomodoro() {
   }, {
     staleTime: 1000 * 60 // 1 minute 
   })
-
   const previousTasksList = queryClient.getQueryData('tasks')
   const [idNewTask, setIdNewTask] = useState(0)
 
@@ -121,6 +125,15 @@ function Pomodoro() {
     })
   }
 
+  function toChangeTime() {
+    togleContextTime()
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      setIsPaused(true);
+    }
+  }
+
   return (
     <div className="pomodoro-conteiner">
       <div className="timer-conteiner conteiner-background">
@@ -128,7 +141,7 @@ function Pomodoro() {
         <div className="controls-buttons">
           <Button > <LuTimerReset /> </Button>
           <Button backgroundColor={'#E88A1A'} onClick={startTimer} > {isPaused ? <FaPlay /> : <FaPause />} </Button>
-          <Button > <TbPlayerTrackNextFilled /> </Button>
+          <Button onClick={toChangeTime} > <TbPlayerTrackNextFilled /> </Button>
         </div>
       </div>
       <div className="conteiner-info-session">
