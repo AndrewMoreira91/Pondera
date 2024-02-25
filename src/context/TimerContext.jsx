@@ -13,20 +13,36 @@ export const TimerContextProvider = ({ children }) => {
 	function togleContextTime() {
 		if (contextTime === 'focus') {
 			console.log('Togle contextTime: shortBreak');
-			
+
 			setContextTime('shortBreak');
 			setTimeInSeconds(TIME_IN_SECONDS_SHORT_BREAK);
 		} else {
 			console.log('Togle contextTime: focus');
-			
+
 			setContextTime('focus');
 			setTimeInSeconds(TIME_IN_SECONDS_FOCUS);
 		}
 		console.log('Time in seconds: ', timeInSeconds);
-}
+	}
+
+	function changeTime() {
+		if (contextTime === 'focus') {
+			setTimeInSeconds(TIME_IN_SECONDS_FOCUS);
+		} else {
+			setTimeInSeconds(TIME_IN_SECONDS_SHORT_BREAK);
+		}
+	}
+
+	console.log(timeInSeconds)
 
 	return (
-		<TimerContext.Provider value={{ contextTime, togleContextTime, timeInSeconds, setTimeInSeconds }}>
+		<TimerContext.Provider value={{
+			contextTime,
+			togleContextTime,
+			timeInSeconds,
+			setTimeInSeconds,
+			changeTime,
+		}}>
 			{children}
 		</TimerContext.Provider>
 	)

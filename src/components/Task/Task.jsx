@@ -7,59 +7,70 @@ import { useState } from 'react';
 import { useQueryClient } from 'react-query';
 import api from '../../services/axios';
 
-const Task = (props) => {
+const Task = ({ task, changeTaskActive, toDeleteTask }) => {
 	const [isEditing, setIsEditing] = useState(false)
 
-	const [valueDescription, setValueDescription] = useState(props.task.description)
+	const [valueDescription, setValueDescription] = useState(task.description)
 	const queryClient = useQueryClient()
-
 
 	function toEditTask() {
 		setIsEditing(false)
-		api.put('/tasks/' + props.task.id, {
+		api.put('/tasks/' + task.id, {
 			description: valueDescription,
 			isDone: 0
 		})
 
 		const previousTasks = queryClient.getQueryData('tasks')
-		const newTasksList = previousTasks.map(task => {
-			if (task.id === props.task.id) {
-				return { ...task, description: valueDescription }
+		const newTasksList = previousTasks.map(previousTask => {
+			if (previousTask.id === task.id) {
+				return { ...previousTask, description: valueDescription }
 			}
-			return task
+			return previousTask
 		})
 		console.log(newTasksList)
 		queryClient.setQueryData('tasks', newTasksList)
 	}
 
-	const [borderColor, setBorderColor] = useState(null)
-
-	function toClickInTask() {
-		props.toClickInTask()
-		if (!borderColor) {
-			setBorderColor({
-				border: "1px",
-				borderColor: "#E88A1A",
-				borderStyle: "solid"
-			})
-		} else {
-			setBorderColor(null)
+	function handleKeyDown(event) {
+		if (event.key === 'Enter') {
+			toEditTask()
 		}
 	}
 
+	function toClickInTask() {
+		changeTaskActive(task)
+	}
+
+	const borderStyle = {
+		border: "1px",
+		borderColor: "#E88A1A",
+		borderStyle: "solid"
+	}
+
 	return (
-		<div onClick={toClickInTask} className='task-component-conteiner' style={borderColor} >
+		<div
+			onBlur={() => toEditTask()}
+			onClick={toClickInTask}
+			style={task.active ? borderStyle : {}}
+			className='task-component-conteiner'
+		>
 			{isEditing ?
 				<>
-					<input value={valueDescription} onChange={e => setValueDescription(e.target.value)} className='input-edit-task' />
+					<input
+						value={valueDescription}
+						onChange={e => setValueDescription(e.target.value)}
+						className='input-edit-task'
+						onKeyDown={handleKeyDown}
+
+					/>
 					<FaCheck onClick={toEditTask} className='button-task' />
 				</>
 				:
 				<>
-					<span>{props.task.description}</span>
+					<span>{task.description}</span>
 					<div className='icons-button-tasks-conteiner'>
 						<MdOutlineModeEditOutline onClick={() => setIsEditing(true)} className='button-task' />
-						<MdDeleteForever onClick={() => props.toDeleteTask(props.task.id)} className='button-task button-delete-task' />
+						<MdDeleteForever onClick={() => toDeleteTask(task.id)} className='button-task button-delete-task' />
 					</div>
 				</>
 			}

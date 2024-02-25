@@ -20,7 +20,10 @@ function Button({ backgroundColor, textColor, onClick, children }) {
   }
 
   return (
-    <button style={ { backgroundColor: bgColor, color: txtColor } } onClick={onClick} className='button-component'>
+    <button style={{ backgroundColor: bgColor, color: txtColor }}
+      onClick={onClick}
+      className='button-component'
+    >
       {children}
     </button>
   );

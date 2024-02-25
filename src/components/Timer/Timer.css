@@ -7,3 +7,9 @@
     font-weight: 800;
     line-height: 85%;
 }
+
+@media (max-width: 474px) {
+    .timer {
+        font-size: 10rem;
+    }
+}

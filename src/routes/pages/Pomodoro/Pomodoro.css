@@ -1,9 +1,12 @@
 .pomodoro-conteiner {
     display: flex;
+    flex-direction: row;
     width: 70%;
+    max-width: 2000px;
     margin: 48px auto;
     gap: 3rem;
-    padding-bottom: 36px;
+    align-items: center;
+    padding-bottom: 24px;
 }
 
 .conteiner-background {
@@ -63,6 +66,7 @@
     max-height: 600px;
     flex-direction: column;
     gap: 1.3rem;
+    align-self: stretch;
 }
 
 .conteiner-info-session h2 {
@@ -78,4 +82,32 @@
     font-family: "Roboto Flex", sans-serif;
     font-size: 0.875rem;
     line-height: 85%;
+}
+
+@media (max-width: 1024px) {
+    .pomodoro-conteiner {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 500px) {
+    .timer-conteiner {
+        height: auto;
+    }
+
+    .controls-buttons button {
+        padding: 1.2rem 1.7rem;
+    }
+    .controls-buttons button:nth-child(2) {
+        padding: 1.5rem 2.5rem;
+    }
+}
+
+@media (max-width: 300px) {
+    .controls-buttons button {
+        padding: 1rem 1.5rem;
+    }
+    .controls-buttons button:nth-child(2) {
+        padding: 1rem 2rem;
+    }
 }

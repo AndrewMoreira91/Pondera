@@ -2,7 +2,6 @@
 	display: flex;
 	height: 100%;
 	flex-direction: column;
-	align-items: flex-start;
 	gap: 8px;
 	overflow: hidden;
 }
@@ -23,9 +22,9 @@
 }
 
 .label-new-task {
-	color: var(--g08, #FFF);
+	color: var(--g04);
 	font-size: 16px;
-	font-weight: 300;
+	font-weight: 400;
 }
 
 .content-tasks {
@@ -63,6 +62,7 @@
 .conteiner-buttons-footer-tasks {
 	display: flex;
 	justify-content: center;
+	margin-top: 16px;
 	gap: 24px;
 }
 
@@ -95,3 +95,18 @@
 .clear-all-tasks-concluded:hover {
 	background: var(--mimolette-orange);;
 }
+
+@media (max-width: 1024px) {
+	.tasks-conteiner {
+		overflow: visible;
+	}
+}
+
+@media (max-width: 724px) {
+	.conteiner-buttons-footer-tasks {
+		flex-direction: column;
+		gap: 12px;
+		width: 100%;
+	}
+}
+

@@ -6,7 +6,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: 0.2s;
-    opacity: .8;
+    opacity: .9;
 }
 
 .button-component:hover {

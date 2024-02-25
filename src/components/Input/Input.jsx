@@ -13,6 +13,13 @@ const Input = (props) => {
 		setTaskDescription('');
 	}
 
+	const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+			console.log('Botão enter apertado')
+			toClick(taskDescription)
+    }
+  }
+
 	return (
 		<div className='input-component-conteiner'>
 			<input
@@ -20,6 +27,7 @@ const Input = (props) => {
 				placeholder="Adicionar uma tarefa"
 				value={taskDescription}
 				onChange={(e) => setTaskDescription(e.target.value)}
+				onKeyDown={handleKeyDown}
 			/>
 			<IoAddOutline onClick={() => toClick(taskDescription)} className='button-new-task-icon' />
 		</div>

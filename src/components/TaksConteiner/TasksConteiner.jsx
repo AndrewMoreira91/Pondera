@@ -1,16 +1,73 @@
 /* eslint-disable react/prop-types */
-import { useQueryClient } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import Input from '../Input/Input';
 import Task from '../Task/Task';
 import './TasksConteiner.css';
 import api from '../../services/axios';
 import { useState } from 'react';
+import { useContext } from 'react';
+import { TimerContext } from '../../context/TimerContext';
 
 const TaskConteier = (props) => {
-
-  const [taskInProgress, setTaskInProgress] = useState('Nenhuma tarefa em andamento')
-
+	const { checkContext, timeInSeconds } = useContext(TimerContext)
+	
 	const queryClient = useQueryClient()
+		
+	useQuery('tasks', async () => {
+		const res = await api.get('/tasks')
+		return res.data
+	}, {
+		staleTime: 1000 * 60 // 1 minute 
+	})
+	const taskList = queryClient.getQueryData('tasks')
+	
+	const [idNewTask, setIdNewTask] = useState(0)
+	const mutationPost = useMutation(newTask => api.post('/tasks', newTask))
+	
+	if (timeInSeconds === 0 && !checkContext) {
+		taskList.forEach(task => {
+			if (task.active) {
+				task.is_done = 1
+			}
+		})
+		console.log(taskList)
+	}
+
+	function createTask(taskDescription) {
+		if (!taskDescription) return
+		mutationPost.mutateAsync({ description: taskDescription })
+			.then(response => {
+				setIdNewTask(response.data.insertId)
+			})
+		queryClient.setQueryData('tasks', () => {
+			return [...taskList, { id: idNewTask, description: taskDescription }]
+		})
+	}
+
+	const mutationDelete = useMutation(id => api.delete('/tasks/' + id))
+	function deleteTask(taskId) {
+		console.log('task deletada: ', taskId)
+		mutationDelete.mutateAsync(taskId)
+		if (mutationDelete.isError) {
+			return console.log('erro ao deletar task\n ID da tasks à ser deletada:', taskId)
+		}
+
+		queryClient.setQueryData('tasks', () => {
+			return taskList.filter(task => task.id !== taskId)
+		})
+	}
+
+	function changeTaskActive(taskActive) {
+		taskList.forEach(task => {
+			if (task.id === taskActive.id) {
+				task.active = true
+				props.toChangeTaskInProgres(task.description)
+			} else {
+				task.active = false
+			}
+		});
+		queryClient.setQueryData('tasks', taskList)
+	}
 
 	function toClearAllTasks() {
 		api.delete('/tasks')
@@ -26,29 +83,21 @@ const TaskConteier = (props) => {
 		})
 	}
 
-	function toClickInTask(task) {
-		setTaskInProgress(task.description)
-	}
-
 	return (
 		<div className='tasks-conteiner conteiner-background'>
-			<div>
-				<span className='label-task-in-progress'>Tarefa em andamento:</span>
-				<h3 className='title-task-in-progress'># {taskInProgress}</h3>
-			</div>
 			<h4 className='label-new-task'>Crie uma nova tarefa</h4>
-			<Input toCreateTask={taskDescription => props.toCreateTask(taskDescription)} />
+			<Input toCreateTask={taskDescription => createTask(taskDescription)} />
 			<div className='content-tasks'>
 				<div className='taskslist-label-conteiner'>
 					<span>Selecione a tarefa para a sua sessão de concentração</span>
 					<div className='tasks-list-conteiner'>
 						{props.toErrorGetTask && <span>Erro ao carregar tarefas</span>}
-						{props.taskList?.map((task, index) => {
+						{taskList?.map((task, index) => {
 							return <Task
 								key={index}
 								task={task}
-								toDeleteTask={taskId => props.toDeleteTask(taskId)}
-								toClickInTask={() => toClickInTask(task)}
+								toDeleteTask={taskId => deleteTask(taskId)}
+								changeTaskActive={(task) => changeTaskActive(task)}
 							/>
 						})}
 					</div>

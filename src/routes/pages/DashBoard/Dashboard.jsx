@@ -45,8 +45,10 @@ function Dashboard() {
         <div className='info-user-conteiner'>
           <h4>Sequência de dias em que você bateu sua meta diária:</h4>
           <div>
-            <FaFire color='#F85A16' size={"1.6rem"} />
-            <span className="days-concluds">2 dias consecutivos</span>
+            <div className='icon-text-days-concluds'>
+              <FaFire color='#F85A16' size={"1.6rem"} />
+              <span className="days-concluds">2 dias consecutivos</span>
+            </div>
             <div className='circles-days-checks'>
               <CircleDayCheck dayAbbreviation={"seg"} isDayGoalComplete={false} />
               <CircleDayCheck dayAbbreviation={"ter"} isDayGoalComplete={true} />
