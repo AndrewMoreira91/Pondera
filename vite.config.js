@@ -14,7 +14,16 @@ export default defineConfig({
         dashboard: './src/routes/pages/DashBoard/Dashboard.jsx',
         errorPage: './src/routes/Erro-page.jsx',
       },
-      external: ['react', 'react-dom', 'react-router-dom', 'react-query'],
+      external: [
+        'react',
+        'react-dom',
+        'react-router-dom',
+        'react-query',
+        'react-modal',
+        'react-icons',
+        'react-toastify',
+        'react-router-dom',
+      ],
     }
   }
 })
