@@ -8,12 +8,6 @@ export default defineConfig({
   base: '/',
   build: {
     rollupOptions: {
-      input: {
-        main: './src/main.jsx',
-        pomodoro: './src/routes/pages/Pomodoro/Pomodoro.jsx',
-        dashboard: './src/routes/pages/DashBoard/Dashboard.jsx',
-        errorPage: './src/routes/Erro-page.jsx',
-      },
       external: [
         'react',
         'react-dom',
