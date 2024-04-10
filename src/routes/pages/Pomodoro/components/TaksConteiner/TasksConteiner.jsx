@@ -1,60 +1,60 @@
 /* eslint-disable react/prop-types */
+import Modal from 'react-modal';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import Input from '../Input/Input';
-import Task from '../Task/Task';
 import './TasksConteiner.css';
-import api from '../../services/axios';
+import Input from '../../../../../components/Input/Input';
+import Task from '../../../../../components/Task/Task';
+import api from '../../../../../services/axios';
 import { useState } from 'react';
-import { useContext } from 'react';
-import { TimerContext } from '../../context/TimerContext';
+
+Modal.setAppElement('#root');
 
 const TaskConteier = (props) => {
-	const { checkContext, timeInSeconds } = useContext(TimerContext)
-	
+	const [modalIsOpen, setModalIsOpen] = useState(false)
+
+	function openModal() {
+		setModalIsOpen(true)
+	}
+
+	function closeModal() {
+		setModalIsOpen(false)
+	}
+
 	const queryClient = useQueryClient()
-		
+
 	useQuery('tasks', async () => {
 		const res = await api.get('/tasks')
 		return res.data
 	}, {
 		staleTime: 1000 * 60 // 1 minute 
 	})
-	const taskList = queryClient.getQueryData('tasks')
-	
-	const [idNewTask, setIdNewTask] = useState(0)
+	let taskList = []
+	taskList = queryClient.getQueryData('tasks')
+
 	const mutationPost = useMutation(newTask => api.post('/tasks', newTask))
-	
-	if (timeInSeconds === 0 && !checkContext) {
-		taskList.forEach(task => {
-			if (task.active) {
-				task.is_done = 1
-			}
-		})
-		console.log(taskList)
-	}
 
 	function createTask(taskDescription) {
 		if (!taskDescription) return
 		mutationPost.mutateAsync({ description: taskDescription })
 			.then(response => {
-				setIdNewTask(response.data.insertId)
+				// setIdNewTask(response.data.insertId)
+				queryClient.setQueryData('tasks', () => {
+					return [...taskList, { id: response.data.insertId, description: taskDescription }]
+				})
 			})
-		queryClient.setQueryData('tasks', () => {
-			return [...taskList, { id: idNewTask, description: taskDescription }]
-		})
 	}
 
-	const mutationDelete = useMutation(id => api.delete('/tasks/' + id))
+	const mutationDelete = useMutation(id => api.delete('/tasks/one/' + id))
 	function deleteTask(taskId) {
-		console.log('task deletada: ', taskId)
 		mutationDelete.mutateAsync(taskId)
 		if (mutationDelete.isError) {
 			return console.log('erro ao deletar task\n ID da tasks à ser deletada:', taskId)
 		}
 
-		queryClient.setQueryData('tasks', () => {
-			return taskList.filter(task => task.id !== taskId)
-		})
+		const newListTasks = taskList.filter(task => task.id !== taskId)
+
+		queryClient.setQueryData('tasks', newListTasks)
+		taskList = newListTasks
 	}
 
 	function changeTaskActive(taskActive) {
@@ -70,17 +70,15 @@ const TaskConteier = (props) => {
 	}
 
 	function toClearAllTasks() {
-		api.delete('/tasks')
+		closeModal()
+		api.delete('/tasks/all')
 		queryClient.setQueryData('tasks', [])
 	}
 
 	function toClearAllTasksDone() {
-		// instance.delete('/tasks/done')
-
-		const previousTasks = queryClient.getQueryData('tasks')
-		queryClient.setQueryData('tasks', () => {
-			return previousTasks.filter(task => task.isDone !== 1)
-		})
+		const newTaskList = taskList.filter(task => task.is_done !== 1)
+		queryClient.setQueryData('tasks', newTaskList)
+		api.delete('/tasks/done')
 	}
 
 	return (
@@ -104,9 +102,28 @@ const TaskConteier = (props) => {
 				</div>
 				<div className='conteiner-buttons-footer-tasks'>
 					<button onClick={toClearAllTasksDone} className='button-footer-clear-tasks clear-all-tasks-concluded'>Apagar todas as tarefas concluídas</button>
-					<button onClick={toClearAllTasks} className='button-footer-clear-tasks clear-all-tasks'>Apagar todas as tarefas</button>
+					<button onClick={() => openModal()} className='button-footer-clear-tasks clear-all-tasks'>Apagar todas as tarefas</button>
 				</div>
 			</div>
+			<Modal
+				isOpen={modalIsOpen}
+				onRequestClose={closeModal}
+				contentLabel='Apagar todas as tarefas'
+				className={'modal-task'}
+				overlayClassName={'overlay-task'}
+			>
+				<div className='modal-task-header'>
+					<h2>Tem certeza que deseja apagar todas as tarefas?</h2>
+				</div>
+				<div className='modal-task-content'>
+						<span className='warning-text'>Se você excluir, não conseguirá recuperar novamente as tarefas</span>
+						<span className='confirm-text'>Deseja continuar?</span>
+				</div>
+				<div className='modal-task-footer'>
+					<button onClick={toClearAllTasks} className='button-footer-clear-tasks-confirm'>Apagar todas as tarefas</button>
+					<button onClick={closeModal} className='button-footer-clear-tasks-cancel'>Cancelar</button>
+				</div>
+			</Modal>
 		</div>
 	);
 }

@@ -11,17 +11,17 @@
 .progress-bar__progress {
 	position: absolute;
 	height: 100%;
-	background-color: #FFA500;
+	background-color: var(--mimolette-orange);
 	width: 0;
 	border-radius: 20px;
-	transition: width 0.3s ease-in;
+	transition: all 0.5s;
 }
 
 .progress-bar__text {
 	position: absolute;
 	display: block;
 	text-align: end;
-	color: #414141;
+	color: #ffffff;
 	font-size: 1rem;
-	font-weight: 400;
+	font-weight: 700;
 }

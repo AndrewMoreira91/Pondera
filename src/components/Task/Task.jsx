@@ -3,15 +3,18 @@ import './Task.css';
 import { MdOutlineModeEditOutline } from "react-icons/md";
 import { MdDeleteForever } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useQueryClient } from 'react-query';
 import api from '../../services/axios';
+import { TimerContext } from '../../context/TimerContext';
 
 const Task = ({ task, changeTaskActive, toDeleteTask }) => {
 	const [isEditing, setIsEditing] = useState(false)
 
 	const [valueDescription, setValueDescription] = useState(task.description)
 	const queryClient = useQueryClient()
+
+	const { contextTime } = useContext(TimerContext)
 
 	function toEditTask() {
 		setIsEditing(false)
@@ -41,17 +44,30 @@ const Task = ({ task, changeTaskActive, toDeleteTask }) => {
 		changeTaskActive(task)
 	}
 
-	const borderStyle = {
-		border: "1px",
-		borderColor: "#E88A1A",
-		borderStyle: "solid"
+	let styleSelected = {}
+	const styles = {
+		activeStyle: {
+			border: "1px",
+			borderColor: "#E88A1A",
+			borderStyle: "solid"
+		},
+		completedStyle: {
+			backgroundColor: '#4E9165'
+		}
+	}
+
+	if (task.active && contextTime === 'focus') {
+		styleSelected = styles.activeStyle
+	}
+	if (task.is_done) {
+		styleSelected = styles.completedStyle
 	}
 
 	return (
 		<div
 			onBlur={() => toEditTask()}
 			onClick={toClickInTask}
-			style={task.active ? borderStyle : {}}
+			style={styleSelected}
 			className='task-component-conteiner'
 		>
 			{isEditing ?
@@ -68,10 +84,12 @@ const Task = ({ task, changeTaskActive, toDeleteTask }) => {
 				:
 				<>
 					<span>{task.description}</span>
-					<div className='icons-button-tasks-conteiner'>
-						<MdOutlineModeEditOutline onClick={() => setIsEditing(true)} className='button-task' />
-						<MdDeleteForever onClick={() => toDeleteTask(task.id)} className='button-task button-delete-task' />
-					</div>
+					{task.isDone ? null :
+						<div className='icons-button-tasks-conteiner'>
+							<MdOutlineModeEditOutline onClick={() => setIsEditing(true)} className='button-task' />
+							<MdDeleteForever onClick={() => toDeleteTask(task.id)} className='button-task button-delete-task' />
+						</div>
+					}
 				</>
 			}
 

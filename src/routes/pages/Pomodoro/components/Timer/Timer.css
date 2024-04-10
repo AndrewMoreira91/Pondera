@@ -2,10 +2,10 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    font-family: "Roboto Flex", sans-serif;
     font-size: 14rem;
     font-weight: 800;
     line-height: 85%;
+    font-family: Roboto Flex;
 }
 
 @media (max-width: 474px) {

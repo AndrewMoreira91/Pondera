@@ -5,9 +5,9 @@ import api from '../../../services/axios';
 import convertSecondsToFormattedTime from '../../../utils/formattedTime';
 import { TimerContext } from '../../../context/TimerContext';
 
-import Timer from '../../../components/Timer/Timer';
+import Timer from './components/Timer/Timer';
+import TaskConteier from './components/TaksConteiner/TasksConteiner';
 import Button from '../../../components/Button/Button';
-import TaskConteier from '../../../components/TaksConteiner/TasksConteiner';
 import ProgressBar from '../../../components/ProgressBar/ProgressBar';
 
 import { FaPause } from "react-icons/fa6";
@@ -19,7 +19,9 @@ let timerInterval = null;
 let intervalPost = null;
 
 function Pomodoro() {
-  const { togleContextTime, timeInSeconds, setTimeInSeconds, changeTime } = useContext(TimerContext)
+  const { togleContextTime, timeInSeconds, setTimeInSeconds, changeTime, contextTime } = useContext(TimerContext)
+
+  const [theme, setTheme] = useState(contextTime === 'focus' ? 'focus' : 'rest');
 
   const [isPaused, setIsPaused] = useState(true);
   const [timeCompleted, setTimeCompleted] = useState(JSON.parse(localStorage.getItem('timeCompleted')) || 0);
@@ -27,15 +29,40 @@ function Pomodoro() {
   const TASKDEFAULTINPROGRESS = 'Nenhuma tarefa em andamento'
   const [taskInProgress, setTaskInProgress] = useState(TASKDEFAULTINPROGRESS)
 
+  const [dots, setDots] = useState('')
+
   const startAudio = new Audio('/start.mp3');
   const stopAudio = new Audio('/stop.mp3');
 
   const queryClient = useQueryClient();
 
+  useQuery('tasks', async () => {
+    const res = await api.get('/tasks')
+    return res.data
+  }, {
+    staleTime: 1000 * 60 // 1 minute 
+  })
+  let taskList = []
+  taskList = queryClient.getQueryData('tasks')
+
+  async function changeTasksInBd(task) {
+    await api.put(`/tasks/${task.id}`, { description: task.description, isDone: task.is_done })
+  }
+
+  async function changeTaskCompleted() {
+    taskList.forEach(task => {
+      if (task.active) {
+        task.active = false
+        task.is_done = 1
+        changeTasksInBd(task)
+      }
+    })
+    queryClient.setQueryData('tasks', taskList)
+  }
+
   useQuery('users', async () => {
     const res = await api.get('/users/1')
       .then(response => {
-        console.log('response.data: ', response.data)
         return response.data
       })
       .catch(error => {
@@ -65,11 +92,13 @@ function Pomodoro() {
         clearInterval(timerInterval);
         timerInterval = null;
         setIsPaused(true);
+        contextTime === 'focus' ? changeTaskCompleted() : null;
         return togleContextTime();
       }
       return prevTimeInSeconds - 1;
     });
     setTimeCompleted((prevTimeCompleted) => {
+      treeDots();
       return prevTimeCompleted + 1
     });
   }
@@ -83,7 +112,7 @@ function Pomodoro() {
       const timeCompletedInLocalStorage = JSON.parse(localStorage.getItem('timeCompleted'))
       api.put('/dailyLogs/updateTime/1', { timeCompleted: timeCompletedInLocalStorage })
     }
-    intervalPost = setInterval(updateTimeCompletedInDB, 1000 * 1) // 1 minute
+    intervalPost = setInterval(updateTimeCompletedInDB, 1000 * 15) // 15 seconds
   }, [])
 
   const startTimer = () => {
@@ -102,6 +131,8 @@ function Pomodoro() {
   }
 
   function toChangeTime() {
+    const newTheme = theme === 'focus' ? 'rest' : 'focus';
+    setTheme(newTheme);
     togleContextTime()
     if (timerInterval) {
       clearInterval(timerInterval);
@@ -117,13 +148,25 @@ function Pomodoro() {
     setIsPaused(true);
   }
 
+  function treeDots() {
+    setDots(prevDots => {
+      if (prevDots === '...') {
+        return '.'
+      } else {
+        return prevDots + '.'
+      }
+    })
+  }
+
   return (
-    <div className="pomodoro-conteiner">
-      <div className="timer-conteiner conteiner-background">
+    <div className="pomodoro-conteiner" data-theme={theme}>
+      <div className="timer-conteiner conteiner-background"
+        style={contextTime === 'rest' ? { borderColor: 'var(--mimolette-orange)' } : {borderColor: 'transparent'} }
+      >
         <Timer minutesAndSecondsFormated={convertSecondsToFormattedTime(timeInSeconds)} />
         <div className="controls-buttons">
           <Button onClick={toResetTimer} > <LuTimerReset /> </Button>
-          <Button backgroundColor={'#E88A1A'}
+          <Button backgroundColor={'var(--mimolette-orange)'}
             onClick={startTimer} >
             {isPaused ? <FaPlay /> : <FaPause />}
           </Button>
@@ -133,7 +176,7 @@ function Pomodoro() {
       <div className="conteiner-info-session">
         <div className='conteiner-background'>
           <span className='label-task-in-progress'>Tarefa em andamento:</span>
-          <h3 className='title-task-in-progress'># {taskInProgress}</h3>
+          <h3 className='title-task-in-progress'># {contextTime === 'focus' ? taskInProgress : `Descansando${dots}`}</h3>
         </div>
         <div className='daily-progress-conteiner conteiner-background'>
           <h2>Andamento diário</h2>

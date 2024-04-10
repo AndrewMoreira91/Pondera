@@ -11,17 +11,24 @@
   --background: rgba(0, 0, 0, 0.24);
   --HeadLine-1: #ECECEC;
 
+  --color-focus: #E88A1A;
+  --color-rest: #35E270;
+
   background-color: #242424;
   color: var(--g02, #EDEDED);
   background: var(--LIner-gradiente-roxo, linear-gradient(90deg, #080216 -0.49%, #10013A 24.06%, #2A1655 76.81%));
 
-  font-family: "Roboto";
+  font-family: Syne, sans-serif;
   font-size: 16px;
 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+}
 
+[data-theme='rest'] {
+  --mimolette-orange: #35E270;
 }
 
 * {

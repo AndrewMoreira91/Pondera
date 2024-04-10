@@ -27,14 +27,16 @@ function Dashboard() {
       <div className='hero-header-conteiner'>
         <div className='column-call-to-action-conteiner'>
           <h2>Comece a sua sessão de concentração agora.</h2>
-          <span className='text-time-goal'>Sua meta diária e de {convertSecondsToFormattedTime(dailyTimeGoal).hourAndMinutes}</span>
+          <span className='text-time-goal'>
+            {timeCompleted >= dailyTimeGoal ?
+              "Parabéns, você bateu sua meta diária!. Continue assim!"
+              :
+              `Falta só ${convertSecondsToFormattedTime(dailyTimeGoal - timeCompleted).hourAndMinutes} para concluir sua meta diária, não desiste agora`}
+          </span>
           <div className='progress-conteiner'>
-            <ProgressBar timeCompleted={timeCompleted} dailyTimeGoal={dailyTimeGoal} />
+            <ProgressBar isShowPorcentage={true} timeCompleted={timeCompleted} dailyTimeGoal={dailyTimeGoal} />
             <span className="text-call-to-action">
-              {timeCompleted >= dailyTimeGoal ?
-                "Parabéns, você bateu sua meta diária!. Continue assim!"
-                :
-                `Falta só ${convertSecondsToFormattedTime(dailyTimeGoal - timeCompleted).hourAndMinutes} para concluir sua meta diária, não desiste agora`}
+              Sua meta diária e de {convertSecondsToFormattedTime(dailyTimeGoal).hourAndMinutes}
             </span>
           </div>
           <Link to="/pomodoro" >

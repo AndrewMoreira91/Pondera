@@ -15,7 +15,6 @@ const Input = (props) => {
 
 	const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
-			console.log('Botão enter apertado')
 			toClick(taskDescription)
     }
   }

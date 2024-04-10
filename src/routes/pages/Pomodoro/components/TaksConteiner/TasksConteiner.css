@@ -1,0 +1,218 @@
+.tasks-conteiner {
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	gap: 8px;
+	overflow: hidden;
+}
+
+.label-task-in-progress {
+	color: var(--g08, #FFF);
+	text-align: center;
+	font-size: 160px;
+}
+
+.title-task-in-progress {
+	overflow: hidden;
+	color: var(--g08, #FFF);
+	font-family: Syne, sans-serif;
+	font-size: 24px;
+	font-weight: 600;
+	margin: 8px 0;
+}
+
+.label-new-task {
+	color: var(--g04);
+	font-size: 16px;
+	font-weight: 400;
+}
+
+.content-tasks {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+	justify-content: space-between;
+	gap: 0.1rem;
+	overflow-y: scroll;
+}
+
+.content-tasks::-webkit-scrollbar {
+	width: 5px;
+}
+
+.content-tasks::-webkit-scrollbar-thumb {
+	background-color: var(--mimolette-orange);
+	border-radius: 10px;
+}
+
+.taskslist-label-conteiner {
+	width: 100%;
+}
+
+.tasks-list-conteiner {
+	display: flex;
+	margin-top: 6px;
+	flex-direction: column;
+	gap: 0.6rem;
+	width: 100%;
+}
+
+.conteiner-buttons-footer-tasks {
+	display: flex;
+	justify-content: center;
+	margin-top: 16px;
+	gap: 24px;
+}
+
+.button-footer-clear-tasks {
+	display: flex;
+	padding: 6px var(--semi-regular-space, 8px);
+	justify-content: center;
+	align-items: center;
+	color: var(--g01, #F7F7F7);
+	font-size: 0.8rem;
+	border-radius: 12px;
+	transition: 0.3s;
+	letter-spacing: 2px;
+	line-height: 110%;
+}
+
+.clear-all-tasks {
+	background: rgba(162, 162, 162, 0.11);
+}
+
+.clear-all-tasks:hover {
+	background: var(--background, rgba(0, 0, 0, 0.24));
+}
+
+.clear-all-tasks-concluded {
+	border: 1px solid var(--mimolette-orange);
+}
+
+.clear-all-tasks-concluded:hover {
+	background: var(--mimolette-orange);
+	;
+}
+
+.modal-task {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: linear-gradient(180deg, #320073 0%, #1C0A35 100%);
+	border-radius: 1rem;
+	box-shadow: 7px 8px 18.8px 0px rgba(0, 0, 0, 0.459);
+	width: fit-content;
+	overflow: hidden;
+}
+
+.modal-task-header {
+	width: 100%;
+	padding: 24px;
+	background-color: #22024B;
+}
+
+.modal-task-header h2 {
+	color: var(--g08, #FFF);
+	font-size: 1.4rem;
+	font-weight: 600;
+	letter-spacing: 1px;
+	line-height: 85%;
+}
+
+.modal-task-content {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+	padding: 24px;
+}
+
+.warning-text {
+	color: var(--g05);
+	line-height: 85%;
+}
+
+.confirm-text {
+	color: var(--g03);
+	font-size: 1.3rem;
+	font-weight: 500;
+	line-height: 85%;
+	/* 1.0625rem */
+}
+
+.modal-task-footer {
+	display: flex;
+	gap: 16px;
+	width: 100%;
+	padding: 0px 24px 24px;
+}
+
+.modal-task-footer button {
+	padding: 8px 16px;
+	border-radius: 8px;
+	font-size: 1rem;
+	font-weight: 00;
+	color: var(--g01);
+	letter-spacing: 0.5px;
+	line-height: 85%;
+	transition: 0.3s;
+}
+
+.button-footer-clear-tasks-confirm {
+	border: 1px solid var(--mimolette-orange);
+}
+
+.button-footer-clear-tasks-confirm:hover {
+	background: var(--mimolette-orange);
+}
+
+.button-footer-clear-tasks-cancel {
+	border: none;
+}
+
+.button-footer-clear-tasks-cancel:hover {
+	background: rgba(15, 1, 47, 0.227);
+}
+
+.overlay-task {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.51);
+	z-index: 1000;
+}
+
+.ReactModal__Overlay {
+	opacity: 0;
+	transition: opacity 300ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+	opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+	opacity: 0;
+}
+
+@media (max-width: 1024px) {
+	.tasks-conteiner {
+		overflow: visible;
+	}
+}
+
+@media (max-width: 724px) {
+	.conteiner-buttons-footer-tasks {
+		flex-direction: column;
+		gap: 12px;
+		width: 100%;
+	}
+}

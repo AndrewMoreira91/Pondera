@@ -13,7 +13,6 @@
     border-radius: var(--medium-space, 1rem);
     background: var(--background, rgba(0, 0, 0, 0.24));
     box-shadow: 7px 8px 18.8px 0px rgba(0, 0, 0, 0.61);
-
     padding: 1rem;
 }
 
@@ -24,6 +23,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    border: 1px solid;
+    transition: all 0.5;
 
     gap: 2rem;
 }
@@ -65,13 +66,12 @@
     min-height: 550px;
     max-height: 600px;
     flex-direction: column;
-    gap: 1.3rem;
+    gap: 1rem;
     align-self: stretch;
 }
 
 .conteiner-info-session h2 {
     color: var(--HeadLine-1, #ECECEC);
-    font-family: Syne;
     font-size: 1.5rem;
     font-weight: 600;
     line-height: 85%;
@@ -79,7 +79,6 @@
 
 .conteiner-info-session span {
     color: #B3B3B3;
-    font-family: "Roboto Flex", sans-serif;
     font-size: 0.875rem;
     line-height: 85%;
 }
