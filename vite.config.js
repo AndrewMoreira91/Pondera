@@ -17,6 +17,8 @@ export default defineConfig({
         'react-router-dom',
         'react-query',
         'react-icons',
+        "react-modal",
+        "react-toastify",
       ],
     }
   }
